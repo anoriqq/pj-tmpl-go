@@ -5,8 +5,13 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/anoriqq/pj-tmpl-go/cmd/exp/internal"
 	"github.com/go-errors/errors"
 )
+
+func init() {
+	slog.SetDefault(slog.New(internal.NewPrettyJSONHandler(os.Stdout, nil)))
+}
 
 func main() {
 	slog.Info("start")
