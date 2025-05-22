@@ -132,7 +132,7 @@ func suppressDefaults(
 	}
 }
 
-func NewPrettyJSONHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
+func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
 	if opts == nil {
 		opts = &slog.HandlerOptions{}
 	}
