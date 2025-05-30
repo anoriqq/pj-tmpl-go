@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
 	"os"
 
@@ -24,6 +23,14 @@ func main() {
 }
 
 func run() error {
-	fmt.Println("Hello World")
+	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, os.TempDir())
+	opts := internal.CLIOptions{
+		Name: "world",
+	}
+
+	if err := cli.Run(opts); err != nil {
+		return err
+	}
+
 	return nil
 }
