@@ -21,6 +21,7 @@ func (c *cli) Run(ctx context.Context, opts cliOptions) error {
 	}
 
 	slog.Info("working directory", slog.String("cwd", c.cwd))
+	slog.Info("running CLI command", slog.Any("options", opts))
 
 	// TODO: Implement the actual logic of the CLI command
 

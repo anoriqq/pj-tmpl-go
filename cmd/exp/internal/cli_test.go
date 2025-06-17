@@ -23,7 +23,7 @@ func TestCLI_Run(t *testing.T) {
 
 	cli := internal.NewCLI(stdout, stderr, stdin, cwd)
 	ctx := context.Background()
-	opts := internal.NewCLIOptions("world")
+	opts := internal.NewCLIOptions()
 
 	{
 		// Act

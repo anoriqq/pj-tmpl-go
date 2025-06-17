@@ -36,7 +36,7 @@ func run(ctx context.Context) error {
 	defer stop()
 
 	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
-	opts := internal.NewCLIOptions("world")
+	opts := internal.NewCLIOptions()
 
 	if err := cli.Run(ctx, opts); err != nil {
 		return err
