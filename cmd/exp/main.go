@@ -23,7 +23,12 @@ func main() {
 }
 
 func run() error {
-	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, os.TempDir())
+	cwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd, os.TempDir())
 	opts := internal.CLIOptions{
 		Name: "world",
 	}
