@@ -29,9 +29,7 @@ func run() error {
 	}
 
 	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd, os.TempDir())
-	opts := internal.CLIOptions{
-		Name: "world",
-	}
+	opts := internal.NewCLIOptions("world")
 
 	if err := cli.Run(opts); err != nil {
 		return err

@@ -22,14 +22,11 @@ func TestCLI_Run(t *testing.T) {
 	}
 
 	cli := internal.NewCLI(stdout, stderr, stdin, cwd, outputDir)
-	opts := internal.CLIOptions{
-		Name: "world",
-	}
+	opts := internal.NewCLIOptions("world")
 
 	{
 		// Act
 		err := cli.Run(opts)
-
 		// Assert
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)

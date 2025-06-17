@@ -5,6 +5,16 @@ import (
 	"io"
 )
 
+type cliOptions struct {
+	Name string
+}
+
+func NewCLIOptions(name string) cliOptions {
+	return cliOptions{
+		Name: name,
+	}
+}
+
 type cli struct {
 	stdout    io.Writer
 	stderr    io.Writer
@@ -13,11 +23,7 @@ type cli struct {
 	outputDir string
 }
 
-type CLIOptions struct {
-	Name string
-}
-
-func (c *cli) Run(opts CLIOptions) error {
+func (c *cli) Run(opts cliOptions) error {
 	fmt.Fprintln(c.stdout, "Hello ", opts.Name)
 	return nil
 }
