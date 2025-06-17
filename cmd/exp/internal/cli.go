@@ -8,16 +8,6 @@ import (
 	"github.com/go-errors/errors"
 )
 
-type cliOptions struct {
-	Name string
-}
-
-func NewCLIOptions(name string) cliOptions {
-	return cliOptions{
-		Name: name,
-	}
-}
-
 type cli struct {
 	stdout io.Writer
 	stderr io.Writer
