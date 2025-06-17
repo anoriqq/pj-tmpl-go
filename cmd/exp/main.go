@@ -14,16 +14,12 @@ func init() {
 }
 
 func main() {
-	slog.Info("start")
-
 	ctx := context.Background()
 
 	if err := run(ctx); err != nil {
 		slog.Error("failed to run", slog.Any("err", err), internal.NewStackTraceSlogAttr(err))
 		os.Exit(1)
 	}
-
-	slog.Info("end")
 }
 
 func run(ctx context.Context) error {
@@ -38,9 +34,11 @@ func run(ctx context.Context) error {
 	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
 	opts := internal.NewCLIOptions()
 
+	slog.Info("start")
 	if err := cli.Run(ctx, opts); err != nil {
 		return err
 	}
+	slog.Info("end")
 
 	return nil
 }
