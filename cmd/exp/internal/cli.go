@@ -3,6 +3,8 @@ package internal
 import (
 	"fmt"
 	"io"
+
+	"github.com/go-errors/errors"
 )
 
 type cliOptions struct {
@@ -24,6 +26,10 @@ type cli struct {
 }
 
 func (c *cli) Run(opts cliOptions) error {
+	if c == nil {
+		return errors.New("cli is nil")
+	}
+
 	fmt.Fprintln(c.stdout, "Hello ", opts.Name)
 	return nil
 }
