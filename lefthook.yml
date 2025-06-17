@@ -1,0 +1,51 @@
+pre-push:
+  parallel: true
+  jobs:
+    - name: main branch protection
+      skip:
+        - run: test "$(pwd)" == "${HOME}"
+      runner: bash
+      run: |
+        push_command=$(ps -ocommand -p $PPID | grep -oE 'git push .+')
+        remote_branch="$(echo $push_command | awk '{for(i=4;i<NF;i++){printf("%s%s",$i,OFS=" ")}print $NF}' | sed -E 's/^.+://' | sed -E 's/ .+$//')"
+        if [ "$remote_branch" = "master" -o "$remote_branch" = "main" ]; then
+          echo "You can't push to master or main branch"
+          exit 1
+        fi
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: gitleaks
+      run: g ds | gitleaks stdin
+    - name: main branch protection
+      skip:
+        - run: test "$(pwd)" == "${HOME}"
+      runner: bash
+      run: |
+        current_branch="$(g branch --show-current)"
+        if [ "$current_branch" = "master" -o "$current_branch" = "main" ]; then
+          echo "You can't commit to master or main branch"
+          exit 1
+        fi
+
+commit-msg:
+  parallel: true
+  jobs:
+    - name: commit message formatting
+      runner: bash
+      run: |
+        TARGET=$(cat {1} | head -n 1 | grep -vE -e '^#' -e '^\s*$' | grep -v -E '^((build|ci|feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?:|Merge branch)')
+        if [ -n "$TARGET" ]; then
+          echo "You need a prefix for commit messages"
+          echo "  Message: $TARGET"
+          echo "Please refer to the following link"
+          echo "https://github.com/angular/angular.js/blob/295213df9537666254626ffe3e4a6013122e4802/DEVELOPERS.md#-git-commit-guidelines"
+          exit 1
+        fi
+    - name: duplicate Signed-off-by validation
+      runner: bash
+      run: 'test $(grep -c "^Signed-off-by: " {1}) -lt 2'
+
+output:
+  - failure
