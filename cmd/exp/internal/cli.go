@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"fmt"
+	"context"
 	"io"
 	"log/slog"
 
@@ -25,14 +25,15 @@ type cli struct {
 	cwd    string
 }
 
-func (c *cli) Run(opts cliOptions) error {
+func (c *cli) Run(ctx context.Context, opts cliOptions) error {
 	if c == nil {
 		return errors.New("cli is nil")
 	}
 
 	slog.Info("working directory", slog.String("cwd", c.cwd))
 
-	fmt.Fprintln(c.stdout, "Hello ", opts.Name)
+	// TODO: Implement the actual logic of the CLI command
+
 	return nil
 }
 

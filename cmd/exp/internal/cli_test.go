@@ -2,6 +2,7 @@ package internal_test
 
 import (
 	"bytes"
+	"context"
 	"os"
 	"testing"
 
@@ -21,11 +22,12 @@ func TestCLI_Run(t *testing.T) {
 	}
 
 	cli := internal.NewCLI(stdout, stderr, stdin, cwd)
+	ctx := context.Background()
 	opts := internal.NewCLIOptions("world")
 
 	{
 		// Act
-		err := cli.Run(opts)
+		err := cli.Run(ctx, opts)
 		// Assert
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)
