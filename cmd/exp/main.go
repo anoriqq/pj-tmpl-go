@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"os"
+	"os/signal"
 
 	"github.com/anoriqq/pj-tmpl-go/cmd/exp/internal"
 )
@@ -30,6 +31,9 @@ func run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
+	defer stop()
 
 	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
 	opts := internal.NewCLIOptions("world")
