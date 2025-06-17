@@ -15,13 +15,12 @@ func TestCLI_Run(t *testing.T) {
 	stdout := new(bytes.Buffer)
 	stderr := new(bytes.Buffer)
 	stdin := new(bytes.Buffer)
-	outputDir := t.TempDir()
 	cwd, err := os.Getwd()
 	if err != nil {
 		t.Fatalf("failed to get current working directory: %v", err)
 	}
 
-	cli := internal.NewCLI(stdout, stderr, stdin, cwd, outputDir)
+	cli := internal.NewCLI(stdout, stderr, stdin, cwd)
 	opts := internal.NewCLIOptions("world")
 
 	{
