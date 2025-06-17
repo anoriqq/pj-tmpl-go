@@ -26,7 +26,7 @@ func (c *cli) Run(ctx context.Context, opts cliOptions) error {
 	// Check if the context is done before proceeding
 	select {
 	case <-ctx.Done():
-		return ctx.Err()
+		return errors.Wrap(context.Cause(ctx), 0)
 	default:
 	}
 
