@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/anoriqq/pj-tmpl-go/cmd/exp/internal"
+	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal"
 	"github.com/tenntenn/golden"
 )
 

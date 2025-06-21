@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/anoriqq/pj-tmpl-go/cmd/exp/internal"
+	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal"
 )
 
 func init() {
