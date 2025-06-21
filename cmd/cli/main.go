@@ -6,18 +6,19 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal"
+	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal/cli"
+	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal/log"
 )
 
 func init() {
-	slog.SetDefault(slog.New(internal.NewPrettyJSONSlogHandler(os.Stdout, nil)))
+	slog.SetDefault(slog.New(log.NewPrettyJSONSlogHandler(os.Stdout, nil)))
 }
 
 func main() {
 	ctx := context.Background()
 
 	if err := run(ctx); err != nil {
-		slog.Error("failed to run", slog.Any("err", err), internal.NewStackTraceSlogAttr(err))
+		slog.Error("failed to run", slog.Any("err", err), log.NewStackTraceSlogAttr(err))
 		os.Exit(1)
 	}
 }
@@ -31,11 +32,11 @@ func run(ctx context.Context) error {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
 	defer stop()
 
-	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
-	opts := internal.NewOptions()
+	c := cli.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
+	opts := cli.NewOptions()
 
 	slog.Info("start")
-	if err := cli.Run(ctx, opts); err != nil {
+	if err := c.Run(ctx, opts); err != nil {
 		return err
 	}
 	slog.Info("end")

@@ -1,4 +1,4 @@
-package internal
+package log
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-errors/errors"
 )
-
 
 func NewStackTraceSlogAttr(err error) slog.Attr {
 	if err == nil {

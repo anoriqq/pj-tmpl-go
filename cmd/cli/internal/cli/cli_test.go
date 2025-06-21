@@ -1,4 +1,4 @@
-package internal_test
+package cli_test
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal"
+	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal/cli"
 	"github.com/tenntenn/golden"
 )
 
@@ -21,13 +21,13 @@ func TestCLI_Run(t *testing.T) {
 		t.Fatalf("failed to get current working directory: %v", err)
 	}
 
-	cli := internal.NewCLI(stdout, stderr, stdin, cwd)
+	c := cli.NewCLI(stdout, stderr, stdin, cwd)
 	ctx := context.Background()
-	opts := internal.NewOptions()
+	opts := cli.NewOptions()
 
 	{
 		// Act
-		err := cli.Run(ctx, opts)
+		err := c.Run(ctx, opts)
 		// Assert
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)
