@@ -32,7 +32,7 @@ func run(ctx context.Context) error {
 	defer stop()
 
 	cli := internal.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
-	opts := internal.NewCLIOptions()
+	opts := internal.NewOptions()
 
 	slog.Info("start")
 	if err := cli.Run(ctx, opts); err != nil {

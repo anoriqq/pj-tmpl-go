@@ -15,7 +15,7 @@ type cli struct {
 	cwd    string
 }
 
-func (c *cli) Run(ctx context.Context, opts cliOptions) error {
+func (c *cli) Run(ctx context.Context, opts options) error {
 	if c == nil {
 		return errors.New("cli is nil")
 	}

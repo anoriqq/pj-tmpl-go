@@ -7,28 +7,28 @@ import (
 	"strings"
 )
 
-type cliOptions struct {
+type options struct {
 	env  string
 	name string
 }
 
-func (o cliOptions) Env() string {
+func (o options) Env() string {
 	return o.env
 }
 
-func (o cliOptions) Name() string {
+func (o options) Name() string {
 	return o.name
 }
 
-func (o cliOptions) LogValue() slog.Value {
+func (o options) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.String("env", o.Env()),
 		slog.String("name", o.Name()),
 	)
 }
 
-func NewCLIOptions() cliOptions {
-	opts := cliOptions{}
+func NewOptions() options {
+	opts := options{}
 
 	flag.StringVar(&opts.env, "env", "", "Environment to use (dev, stg, prd)")
 	flag.StringVar(&opts.name, "name", "", "Name to greet")
