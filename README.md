@@ -1,8 +1,9 @@
 # anoriqq/pj-tmpl-go
 
 ```sh
-git clone https://github.com/anoriqq/pj-tmpl-go <path/to/pj>
-cd <path/to/pj>
-go mod edit -module <new/module/name>
-go mod edit -go=$(go version | awk '{print $3}' | sed 's/go//')
+PKG=github.com/yourname/yourpj
+ghq create ${PKG}
+gonew github.com/anoriqq/pj-tmpl-go $(ghq list -e ${PKG}) $(ghq list -p -e ${PKG})/tmp
+mv $(ghq list -p -e ${PKG})/tmp/* $(ghq list -p -e ${PKG})
+rm -r $(ghq list -p -e ${PKG})/tmp
 ```
