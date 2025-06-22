@@ -21,7 +21,7 @@ func Run(ctx context.Context, opts options) error {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		slog.InfoContext(r.Context(), "Received request",
+		slog.InfoContext(r.Context(), "received request",
 			slog.String("user-agent", r.UserAgent()),
 			slog.String("method", r.Method),
 			slog.String("url", r.URL.String()))
