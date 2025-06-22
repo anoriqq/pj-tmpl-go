@@ -27,7 +27,6 @@ func Run(ctx context.Context, opts options) error {
 			slog.String("url", r.URL.String()))
 		w.WriteHeader(http.StatusOK)
 		io.WriteString(w, "Hello, World!\n")
-		panic("simulated panic for testing error handling")
 	})
 
 	s := &http.Server{
