@@ -43,6 +43,8 @@ type Handler struct {
 	m *sync.Mutex
 }
 
+var _ slog.Handler = (*Handler)(nil)
+
 func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 	return h.h.Enabled(ctx, level)
 }
@@ -50,9 +52,9 @@ func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return &Handler{
 		w: h.w,
-		h: h,
-		b: &bytes.Buffer{},
-		m: &sync.Mutex{},
+		h: h.h.WithAttrs(attrs),
+		b: h.b,
+		m: h.m,
 	}
 }
 
