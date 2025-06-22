@@ -48,11 +48,21 @@ func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 }
 
 func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return &Handler{h: h.h.WithAttrs(attrs), b: h.b, m: h.m}
+	return &Handler{
+		w: h.w,
+		h: h,
+		b: &bytes.Buffer{},
+		m: &sync.Mutex{},
+	}
 }
 
 func (h *Handler) WithGroup(name string) slog.Handler {
-	return &Handler{h: h.h.WithGroup(name), b: h.b, m: h.m}
+	return &Handler{
+		w: h.w,
+		h: h.h.WithGroup(name),
+		b: h.b,
+		m: h.m,
+	}
 }
 
 const (
@@ -140,12 +150,12 @@ func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
 
 	return &Handler{
 		w: w,
-		b: b,
 		h: slog.NewJSONHandler(b, &slog.HandlerOptions{
 			Level:       opts.Level,
 			AddSource:   opts.AddSource,
 			ReplaceAttr: suppressDefaults(opts.ReplaceAttr),
 		}),
+		b: b,
 		m: &sync.Mutex{},
 	}
 }
