@@ -37,9 +37,9 @@ GO_BUILD:=-tags=$(GO_BUILD_TAGS) $(GO_BUILD_RACE) $(GO_BUILD_STATIC) -ldflags "$
 .PHONY: build
 build: $(BINARIES)
 
-$(BINARIES): $(GO_FILES) $(GOPB_FILES) .git/HEAD
+$(BINARIES): $(GO_FILES) .git/HEAD
 	@CGO_ENABLED=0 go build -o $@ $(GO_BUILD) $(@:$(BINDIR)/%=$(ROOT_PACKAGE)/cmd/%)
 
 .PHONY: clean
 clean:
-	@$(RM) $(GOPB_FILES) $(BINARIES)
+	@$(RM) $(BINARIES)
