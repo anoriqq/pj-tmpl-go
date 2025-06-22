@@ -1,4 +1,4 @@
 /*
-TODO: Add a description of the package.
+Package pjtmplgo は、Go言語によるプロジェクトのテンプレートです。
 */
 package pjtmplgo
