@@ -32,12 +32,12 @@ func (c *cli) Run(ctx context.Context, opts options) error {
 	}
 
 	{
-		opts, err := pjtmplgo.NewOptions()
+		runOpts, err := pjtmplgo.NewOptions()
 		if err != nil {
 			return err
 		}
 
-		if err := pjtmplgo.Run(ctx, opts); err != nil {
+		if err := pjtmplgo.Run(ctx, runOpts); err != nil {
 			return err
 		}
 	}
