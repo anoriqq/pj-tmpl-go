@@ -5,6 +5,7 @@ import (
 	"io"
 	"log/slog"
 
+	pjtmplgo "github.com/anoriqq/pj-tmpl-go"
 	"github.com/go-errors/errors"
 )
 
@@ -30,7 +31,16 @@ func (c *cli) Run(ctx context.Context, opts options) error {
 	default:
 	}
 
-	// TODO: Implement the actual logic of the CLI command
+	{
+		opts, err := pjtmplgo.NewOptions()
+		if err != nil {
+			return err
+		}
+
+		if err := pjtmplgo.Run(ctx, opts); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
