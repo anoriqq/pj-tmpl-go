@@ -29,7 +29,7 @@ func run(ctx context.Context) error {
 		return err
 	}
 
-	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
 	defer stop()
 
 	c := cli.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
