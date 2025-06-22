@@ -90,7 +90,7 @@ func (h *Handler) Handle(ctx context.Context, r slog.Record) error {
 		return err
 	}
 
-	bytes, err := json.MarshalIndent(attrs, "", "  ")
+	b, err := json.MarshalIndent(attrs, "", "  ")
 	if err != nil {
 		return fmt.Errorf("error when marshaling attrs: %w", err)
 	}
@@ -100,7 +100,7 @@ func (h *Handler) Handle(ctx context.Context, r slog.Record) error {
 		colorize(lightGray, r.Time.Format(timeFormat)),
 		level,
 		colorize(white, r.Message),
-		colorize(darkGray, string(bytes)),
+		colorize(darkGray, string(b)),
 	)
 
 	return nil
