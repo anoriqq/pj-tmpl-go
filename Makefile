@@ -40,6 +40,10 @@ build: $(BINARIES)
 $(BINARIES): $(GO_FILES) .git/HEAD
 	@CGO_ENABLED=0 go build -o $@ $(GO_BUILD) $(@:$(BINDIR)/%=$(ROOT_PACKAGE)/cmd/%)
 
+.PHONY: test
+test:
+	@gotest -race -timeout 1s ./...
+
 .PHONY: clean
 clean:
 	@$(RM) $(BINARIES)
