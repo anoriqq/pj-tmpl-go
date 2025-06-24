@@ -5,7 +5,10 @@ import (
 	"log/slog"
 	"os"
 	"strings"
+	"sync"
 )
+
+var once sync.Once
 
 type options struct {
 	env  string
@@ -32,8 +35,10 @@ func (o options) LogValue() slog.Value {
 func NewOptions() options {
 	opts := options{}
 
-	flag.StringVar(&opts.env, "env", "", "Environment to use (dev, stg, prd)")
-	flag.StringVar(&opts.name, "name", "", "Name to greet")
+	once.Do(func() {
+		flag.StringVar(&opts.env, "env", "", "Environment to use (dev, stg, prd)")
+		flag.StringVar(&opts.name, "name", "", "Name to greet")
+	})
 
 	flag.VisitAll(func(f *flag.Flag) {
 		if s := os.Getenv(strings.ToUpper(f.Name)); s != "" {
