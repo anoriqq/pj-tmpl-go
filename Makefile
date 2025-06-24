@@ -34,16 +34,22 @@ ifdef RELEASE
 endif
 GO_BUILD:=-tags=$(GO_BUILD_TAGS) $(GO_BUILD_RACE) $(GO_BUILD_STATIC) -ldflags "$(GO_LDFLAGS)"
 
+.PHONY: help
+help: ## Display this help screen
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
 .PHONY: build
-build: $(BINARIES)
+build: $(BINARIES) ## Build all binaries. If RELEASE is set, it will build release binaries.
+	@echo "Binaries built in $(BINDIR)/"
 
 $(BINARIES): $(GO_FILES) .git/HEAD
 	@CGO_ENABLED=0 go build -o $@ $(GO_BUILD) $(@:$(BINDIR)/%=$(ROOT_PACKAGE)/cmd/%)
 
 .PHONY: test
-test:
+test: ## Run tests
 	@gotest -race -timeout 1s ./...
 
 .PHONY: clean
-clean:
+clean: ## Clean up build artifacts
 	@$(RM) $(BINARIES)
