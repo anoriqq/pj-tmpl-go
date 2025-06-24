@@ -48,7 +48,7 @@ $(BINARIES): $(GO_FILES) .git/HEAD
 
 .PHONY: test
 test: ## Run tests
-	@gotest -race -timeout 1s ./...
+	@gotest -race -shuffle on -timeout 1s ./...
 
 .PHONY: clean
 clean: ## Clean up build artifacts
