@@ -28,7 +28,7 @@ func TestDivide(t *testing.T) { // 関数名にはSUTの名前を使う
         // Assert
         want := 5
         if got != want {
-            t.Errorf("Divide(10, 2) = %d, want %d", got, want)
+            t.Errorf("func(10, 2) = %d, want %d", got, want) // リネームが大変なのでDivideなどの名前をリテラル型の中で使わない
         }
     })
 }
