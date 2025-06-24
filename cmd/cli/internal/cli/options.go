@@ -27,6 +27,8 @@ func (o options) LogValue() slog.Value {
 	)
 }
 
+// NewOptions CLIのオプションを取得する
+// フラグと環境変数から値を取得する。両方に値が設定されている場合はフラグの値を採用する。
 func NewOptions() options {
 	opts := options{}
 
