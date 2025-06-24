@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal/cli"
-	"github.com/anoriqq/pj-tmpl-go/cmd/cli/internal/log"
+	"github.com/anoriqq/pj-tmpl-go/cmd/server/internal/cli"
+	"github.com/anoriqq/pj-tmpl-go/cmd/server/internal/log"
 )
 
 func init() {
