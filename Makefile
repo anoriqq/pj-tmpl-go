@@ -50,6 +50,10 @@ $(BINARIES): $(GO_FILES) .git/HEAD
 test: ## Run tests
 	@gotest -race -shuffle on -timeout 1s ./...
 
+.PHONY: run
+run: ## Run the main application
+	@air
+
 .PHONY: clean
 clean: ## Clean up build artifacts
 	@$(RM) $(BINARIES)
