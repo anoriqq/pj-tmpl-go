@@ -111,10 +111,10 @@ func (h *Handler) computeAttrs(
 	r slog.Record,
 ) (map[string]any, error) {
 	h.m.Lock()
-	defer func() {
-		h.b.Reset()
-		h.m.Unlock()
-	}()
+	defer h.m.Unlock()
+
+	defer h.b.Reset()
+
 	if err := h.h.Handle(ctx, r); err != nil {
 		return nil, fmt.Errorf("error when calling inner handler's Handle: %w", err)
 	}
