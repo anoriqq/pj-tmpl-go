@@ -40,9 +40,9 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 ## Architecture
 
 ### Project Structure
-- `cmd/cli/` - CLI application entry point with signal handling
-- `cmd/cli/internal/cli/` - CLI implementation with options parsing
-- `cmd/cli/internal/log/` - Custom slog handler with pretty JSON output
+- `cmd/server/` - CLI application entry point with signal handling
+- `cmd/server/internal/cli/` - CLI implementation with options parsing
+- `cmd/server/internal/log/` - Custom slog handler with pretty JSON output
 - `run.go` - Main application logic (HTTP server on :8888)
 - `internal/` - Shared internal packages
 
@@ -52,11 +52,11 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 3. **Context**: Proper context propagation with graceful shutdown (5s timeout)
 4. **Testing**: Table-driven tests using maps (not slices) for randomized execution
 
-### Testing Best Practices (from docs/testing_essentials.md)
+### Testing Best Practices (from docs/general/testing_essentials.md)
 - Use descriptive test names: `Test_FunctionName_Condition_ExpectedResult`
 - Separate tests for different specifications
 - Provide detailed error messages
-- Use golden file testing with `github.com/tenntenn/golden`
+- Golden files are used for testing (see `testdata/` directories)
 
 ## Important Notes
 
@@ -68,7 +68,7 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 
 ### Development Considerations
 - This is a template meant to be used with `gonew`
-- Some documentation is in Japanese (testing guide in `docs/testing_essentials.md`)
+- Some documentation is in Japanese (testing guide in `docs/general/testing_essentials.md`)
 - No CI/CD configuration included (add per project needs)
 - Golden test files stored in `testdata/` directories
 - Binaries are built to `bin/` directory which is gitignored
