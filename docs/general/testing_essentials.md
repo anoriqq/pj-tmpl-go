@@ -9,7 +9,7 @@ SUT（System Under Test）の名前を含め、テストの条件と期待結果
 // 悪い例
 // 何をテストしているのか不明
 func Test(t *testing.T) {
-    a.Parallel()
+    t.Parallel()
     if Divide(10, 2) != 5 {
         t.Error()
     }
@@ -17,9 +17,9 @@ func Test(t *testing.T) {
 
 // 良い例
 func TestDivide(t *testing.T) { // 関数名にはSUTの名前を使う
-    a.Parallel()
+    t.Parallel()
 
-    a.Run("正の数で除算すると商を返す", func(t *testing.T) { // テスト名に条件と期待する結果を含める
+    t.Run("正の数で除算すると商を返す", func(t *testing.T) { // テスト名に条件と期待する結果を含める
         t.Parallel()
 
         // Act
@@ -123,7 +123,7 @@ func TestParseConfig(t *testing.T) {
 
     want := 8080
     if got.Port != want {
-        a.Errorf("ポート番号 %d を得るはずが %d を得た", want, got.Port)
+        t.Errorf("ポート番号 %d を得るはずが %d を得た", want, got.Port)
     }
 }
 ```
