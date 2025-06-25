@@ -52,7 +52,7 @@ test: ## Run tests
 
 .PHONY: run
 run: ## Run the main application
-	@air
+	@air -c .air.toml -build.bin $(BINARIES)
 
 .PHONY: clean
 clean: ## Clean up build artifacts
