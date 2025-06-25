@@ -8,15 +8,29 @@ import (
 	"sync"
 )
 
-var once sync.Once
+var (
+	opts options
+	mu   sync.Mutex
+)
+
+func init() {
+	flag.StringVar(&opts.env, "env", "", "Environment to use (dev, stg, prd)")
+	flag.Uint64Var(&opts.port, "port", 0, "Port to listen on")
+	flag.StringVar(&opts.name, "name", "", "Name to greet")
+}
 
 type options struct {
 	env  string
+	port uint64
 	name string
 }
 
 func (o options) Env() string {
 	return o.env
+}
+
+func (o options) Port() uint64 {
+	return o.port
 }
 
 func (o options) Name() string {
@@ -26,6 +40,7 @@ func (o options) Name() string {
 func (o options) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.String("env", o.Env()),
+		slog.Uint64("port", o.Port()),
 		slog.String("name", o.Name()),
 	)
 }
@@ -33,20 +48,15 @@ func (o options) LogValue() slog.Value {
 // NewOptions CLIのオプションを取得する
 // フラグと環境変数から値を取得する。両方に値が設定されている場合はフラグの値を採用する。
 func NewOptions() options {
-	opts := options{}
-
-	once.Do(func() {
-		flag.StringVar(&opts.env, "env", "", "Environment to use (dev, stg, prd)")
-		flag.StringVar(&opts.name, "name", "", "Name to greet")
-	})
-
 	flag.VisitAll(func(f *flag.Flag) {
 		if s := os.Getenv(strings.ToUpper(f.Name)); s != "" {
 			f.Value.Set(s)
 		}
 	})
 
+	mu.Lock()
 	flag.Parse()
+	mu.Unlock()
 
 	return opts
 }
