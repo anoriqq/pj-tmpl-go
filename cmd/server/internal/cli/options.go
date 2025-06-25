@@ -48,15 +48,25 @@ func (o options) LogValue() slog.Value {
 // NewOptions CLIのオプションを取得する
 // フラグと環境変数から値を取得する。両方に値が設定されている場合はフラグの値を採用する。
 func NewOptions() options {
-	flag.VisitAll(func(f *flag.Flag) {
-		if s := os.Getenv(strings.ToUpper(f.Name)); s != "" {
-			f.Value.Set(s)
-		}
-	})
-
 	mu.Lock()
 	flag.Parse()
 	mu.Unlock()
+
+	flag.VisitAll(func(f *flag.Flag) {
+		if strings.Contains(f.Name, ".") {
+			// ドットが含まれるフラグはoptionsに定義されているものではないので無視
+			return
+		}
+
+		if f.Value.String() != f.DefValue {
+			// フラグに値が指定されている場合はそれをそのまま使うのでスキップ
+			return
+		}
+
+		if env := os.Getenv(strings.ToUpper(f.Name)); env != "" {
+			f.Value.Set(env)
+		}
+	})
 
 	return opts
 }
