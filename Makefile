@@ -52,7 +52,7 @@ $(BINARIES): $(GO_FILES) .git/HEAD
 
 .PHONY: test
 test: ## Run tests
-	@gotest -race -shuffle on -timeout 1s ./...
+	@gotest -race -shuffle on -timeout 3s -count 2 ./...
 
 .PHONY: run
 run: ## Run the main application
