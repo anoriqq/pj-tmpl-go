@@ -1,7 +1,7 @@
 BINDIR:=bin
 ROOT_PACKAGE:=$(shell go list .)
-COMMAND_PACKAGES:=$(shell go list ./cmd/... | grep -v '^\([^/]*/\)\{5\}')
-BINARIES:=$(COMMAND_PACKAGES:$(ROOT_PACKAGE)/cmd/%=$(BINDIR)/%)
+COMMAND_PACKAGES:=$(shell go list ./cmd | grep -v '^\([^/]*/\)\{4\}')
+BINARIES:=$(COMMAND_PACKAGES:$(ROOT_PACKAGE)/%=$(BINDIR)/%)
 GO_FILES:=$(shell find . -type f -name '*.go' -print)
 
 # symbol table and dwarf
@@ -44,7 +44,7 @@ build: $(BINARIES) ## Build all binaries. If RELEASE is set, it will build relea
 	@echo "Binaries built in $(BINDIR)/"
 
 $(BINARIES): $(GO_FILES) .git/HEAD
-	@CGO_ENABLED=0 go build -o $@ $(GO_BUILD) $(@:$(BINDIR)/%=$(ROOT_PACKAGE)/cmd/%)
+	@CGO_ENABLED=0 go build -o $@ $(GO_BUILD) $(@:$(BINDIR)/%=$(ROOT_PACKAGE)/%)
 
 .PHONY: test
 test: ## Run tests
