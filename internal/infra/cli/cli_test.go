@@ -37,7 +37,7 @@ func TestCLI_Run(t *testing.T) {
 	}
 
 	// Act
-	err = sut.Run(ctx, opts)
+	err = sut.Main(ctx, opts)
 
 	//' Assert
 	if !errors.Is(err, nil) {

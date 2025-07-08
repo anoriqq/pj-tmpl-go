@@ -26,13 +26,15 @@ func main() {
 }
 
 func run(ctx context.Context) error {
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
+	defer stop()
+
 	cwd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 
-	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
-	defer stop()
+	c := cli.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
 
 	args := os.Args[1:]
 	opts, err := cli.NewOptions(args)
@@ -45,10 +47,8 @@ func run(ctx context.Context) error {
 
 	setupLogger(opts.Env())
 
-	c := cli.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
-
 	slog.Info("start")
-	if err := c.Run(ctx, opts); err != nil {
+	if err := c.Main(ctx, opts); err != nil {
 		return err
 	}
 	slog.Info("end")

@@ -27,9 +27,9 @@ func TestNewOptions(t *testing.T) {
 		if !errors.Is(err, nil) {
 			t.Fatalf("オプションの取得に失敗: %v", err)
 		}
-		want := uint64(8080)
-		if got.Port() != want {
-			t.Errorf("デフォルト値である`%d`を得るはずが`%d`を得た", want, got.Port())
+		want := "8000"
+		if got.Port().String() != want {
+			t.Errorf("デフォルト値である`%s`を得るはずが`%d`を得た", want, got.Port())
 		}
 	})
 

@@ -8,13 +8,14 @@ import (
 	"strings"
 
 	"github.com/anoriqq/pj-tmpl-go/internal/domain/env"
+	"github.com/anoriqq/pj-tmpl-go/internal/domain/port"
 	"github.com/go-errors/errors"
 )
 
 type options struct {
 	help bool
 	env  env.Env
-	port uint64
+	port port.Port
 }
 
 var _ slog.LogValuer = (options{})
@@ -27,7 +28,7 @@ func (o options) Env() env.Env {
 	return o.env
 }
 
-func (o options) Port() uint64 {
+func (o options) Port() port.Port {
 	return o.port
 }
 
@@ -35,7 +36,7 @@ func (o options) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Bool("help", o.Help()),
 		slog.String("env", o.Env().String()),
-		slog.Uint64("port", o.Port()),
+		slog.String("port", o.Port().String()),
 	)
 }
 
@@ -49,12 +50,12 @@ func NewOptions(args []string) (options, error) {
 	opts := options{
 		help: false,
 		env:  env.LCL,
-		port: 8080,
+		port: port.New(8000),
 	}
 	fs.BoolVar(&opts.help, "help", opts.help, "Show help message and exit")
 	envUsage := fmt.Sprintf("Environment to use (%s)", strings.Join(env.EnvStrings(), ","))
 	fs.Var(&opts.env, "env", envUsage)
-	fs.Uint64Var(&opts.port, "port", opts.port, "Port to listen on")
+	fs.Var(&opts.port, "port", "Port to listen on")
 
 	if parseErr := fs.Parse(args); parseErr != nil {
 		return options{}, errors.Wrap(parseErr, 0)

@@ -5,7 +5,7 @@ import (
 	"io"
 	"log/slog"
 
-	pjtmplgo "github.com/anoriqq/pj-tmpl-go"
+	"github.com/anoriqq/pj-tmpl-go/internal/infra/server"
 	"github.com/go-errors/errors"
 )
 
@@ -16,13 +16,13 @@ type cli struct {
 	cwd    string
 }
 
-func (c *cli) Run(ctx context.Context, opts options) error {
+func (c *cli) Main(ctx context.Context, opts options) error {
 	if c == nil {
 		return errors.New("cli is nil")
 	}
 
 	slog.Info("working directory", slog.String("cwd", c.cwd))
-	slog.Info("running CLI command", slog.Any("options", opts))
+	slog.Info("running CLI", slog.Any("options", opts))
 
 	// Check if the context is done before proceeding
 	select {
@@ -31,15 +31,8 @@ func (c *cli) Run(ctx context.Context, opts options) error {
 	default:
 	}
 
-	{
-		runOpts, err := pjtmplgo.NewOptions()
-		if err != nil {
-			return err
-		}
-
-		if err := pjtmplgo.Run(ctx, runOpts); err != nil {
-			return err
-		}
+	if err := server.Serve(ctx, opts.Port()); err != nil {
+		return err
 	}
 
 	return nil
