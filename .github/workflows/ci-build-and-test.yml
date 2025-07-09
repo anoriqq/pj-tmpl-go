@@ -9,6 +9,10 @@ on:
       - '**.go'
       - '**/go.mod'
       - '**/go.sum'
+      - 'Makefile'                    # CI uses make commands
+      - '.github/workflows/**'        # CI config changes
+      - 'mise.toml'                   # Tool version changes
+      - '**/testdata/**'              # Test data changes
 
 jobs:
 
