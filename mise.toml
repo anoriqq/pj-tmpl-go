@@ -1,0 +1,9 @@
+[alias]
+gotest = "go:github.com/rakyll/gotest"
+
+[tools]
+air = "latest"
+go = "latest"
+gotest = "latest"
+lefthook = "latest"
+gitleaks = "latest"
