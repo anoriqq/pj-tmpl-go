@@ -17,11 +17,6 @@ jobs:
       with:
         experimental: true
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version-file: 'go.mod' # path from repo root
-
     - name: Build
       env:
         RELEASE: 1
