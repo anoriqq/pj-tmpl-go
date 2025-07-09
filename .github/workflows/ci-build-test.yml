@@ -19,6 +19,8 @@ jobs:
         go-version-file: 'go.mod' # path from repo root
 
     - name: Build
+      env:
+        RELEASE: 1
       run: make build
 
     - name: Test
