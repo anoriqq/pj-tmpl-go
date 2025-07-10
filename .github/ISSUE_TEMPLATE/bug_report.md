@@ -3,7 +3,7 @@ name: Bug report
 about: 改善に役立てるための報告書を作成してください
 title: ''
 labels: ''
-assignees: anoriqq
+assignees: ''
 
 ---
 
