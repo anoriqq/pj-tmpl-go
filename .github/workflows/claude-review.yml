@@ -1,0 +1,69 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  claude-code-action:
+    # Only run for PRs from specific authors
+    if: |
+      github.event.pull_request.user.login == 'anoriqq' ||
+      github.event.pull_request.user.login == 'external-contributor'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
+
+      - name: Review PR from Specific Author
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        uses: anthropics/claude-code-action@beta
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          timeout_minutes: "60"
+          allowed_tools: |
+            Bash
+            Edit
+            MultiEdit
+            WebFetch
+            WebSearch
+            Write
+            mcp__o3
+          mcp_config: |
+            {
+              "mcpServers": {
+                "o3": {
+                  "command": "pnpm",
+                  "args": [
+                    "dlx",
+                    "o3-search-mcp"
+                  ],
+                  "env": {
+                    "SEARCH_CONTEXT_SIZE": "medium",
+                    "REASONING_EFFORT": "medium"
+                  }
+                }
+              }
+            }
+          direct_prompt: |
+            Please provide a thorough review of this pull request.
+
+            Since this is from a specific author that requires careful review,
+            please pay extra attention to:
+            - Adherence to project coding standards
+            - Proper error handling
+            - Security best practices
+            - Test coverage
+            - Documentation
