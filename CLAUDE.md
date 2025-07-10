@@ -89,7 +89,6 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 ### Development Considerations
 - This is a template meant to be used with `gonew`
 - Some documentation is in Japanese (testing guide in `docs/general/testing_essentials.md`)
-- No CI/CD configuration included (add per project needs)
 - Golden test files stored in `testdata/` directories
 - Binaries are built to `bin/` directory which is gitignored
 - Air configuration in `.air.toml` for hot reloading
@@ -108,3 +107,26 @@ After cloning or creating from template:
 - `gotest ./...` - Run tests using the gotest wrapper
 - `gotest -run TestName` - Run a specific test
 - `gotest ./internal/infra/cli -update` - Update golden test files
+
+## CI/CD
+
+### GitHub Actions Workflows
+- **build-and-test** - Main CI pipeline triggered by pushes/PRs to main branch
+  - Runs on Go file changes, Makefile changes, CI config updates, and test data changes
+  - Uses `mise` for tool management, builds with `RELEASE=1 make build`, runs `make test`
+- **claude-assistant** - AI-powered PR assistant activated by `@claude` mentions
+  - Responds to issue comments, PR review comments, and issue assignments
+  - 60-minute timeout with full tool access (Bash, Edit, WebSearch, etc.)
+- **claude-review** - Automated PR reviews for every opened/updated PR
+  - Reviews coding standards, error handling, security, test coverage, documentation
+  - Uses O3 search MCP for enhanced reasoning capabilities
+
+### Dependency Management
+- **Renovate** - Automated dependency updates via `renovate.json`
+  - Uses custom configuration: `local>anoriqq/renovate-config`
+  - Manages Go modules and tool versions automatically
+
+### Required Secrets
+For Claude AI workflows:
+- `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code authentication
+- `OPENAI_API_KEY` - OpenAI API access for enhanced search capabilities

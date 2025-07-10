@@ -19,16 +19,16 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: jdx/mise-action@v2
-      with:
-        experimental: true
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
 
-    - name: Build
-      env:
-        RELEASE: 1
-      run: make build
+      - name: Build
+        env:
+          RELEASE: 1
+        run: make build
 
-    - name: Test
-      run: make test
+      - name: Test
+        run: make test
