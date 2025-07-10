@@ -6,6 +6,9 @@ on:
 
 jobs:
   claude-code-action:
+    if: |
+      contains(fromJSON('["anoriqq"]'), github.event.pull_request.user.login) &&
+        github.event.pull_request.user.type == 'User'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -56,8 +59,7 @@ jobs:
           direct_prompt: |
             Please provide a thorough review of this pull request.
 
-            Since this is from a specific author that requires careful review,
-            please pay extra attention to:
+            Requires careful review, please pay extra attention to:
             - Adherence to project coding standards
             - Proper error handling
             - Security best practices
