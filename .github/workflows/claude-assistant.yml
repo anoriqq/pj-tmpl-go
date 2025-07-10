@@ -52,9 +52,8 @@ jobs:
             {
               "mcpServers": {
                 "o3": {
-                  "command": "pnpm",
+                  "command": "npx",
                   "args": [
-                    "dlx",
                     "o3-search-mcp"
                   ],
                   "env": {
