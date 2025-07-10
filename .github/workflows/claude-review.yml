@@ -8,8 +8,7 @@ jobs:
   claude-code-action:
     # Only run for PRs from specific authors
     if: |
-      github.event.pull_request.user.login == 'anoriqq' ||
-      github.event.pull_request.user.login == 'external-contributor'
+      github.event.pull_request.user.login == 'anoriqq'
     runs-on: ubuntu-latest
     permissions:
       contents: read
