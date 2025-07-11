@@ -16,7 +16,6 @@ jobs:
       go: ${{ steps.filter.outputs.go }}
       force: ${{ steps.filter.outputs.force }}
     steps:
-      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -41,4 +40,5 @@ jobs:
     permissions:
       contents: read
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/go
