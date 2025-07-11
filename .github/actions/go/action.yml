@@ -1,0 +1,21 @@
+name: 'Go Build and Test'
+description: 'Composite action for Go project build and test execution'
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: jdx/mise-action@v2
+      with:
+        experimental: true
+
+    - name: Build
+      shell: bash
+      env:
+        RELEASE: 1
+      run: make build
+
+    - name: Test
+      shell: bash
+      run: make test
