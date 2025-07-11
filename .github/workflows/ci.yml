@@ -38,5 +38,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.go == 'true' || needs.changes.outputs.force == 'true' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: ../actions/go
