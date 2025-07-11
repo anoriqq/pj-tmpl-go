@@ -1,5 +1,5 @@
-name: go
-description: go
+name: 'Go Build and Test'
+description: 'Composite action for Go project build and test execution'
 
 runs:
   using: composite
