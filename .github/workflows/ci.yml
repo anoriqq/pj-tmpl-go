@@ -43,4 +43,4 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: .github/actions/go
+      - uses: ./.github/actions/go
