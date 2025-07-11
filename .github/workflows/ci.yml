@@ -25,6 +25,8 @@ jobs:
               - '**/*.go'
               - '**/go.mod'
               - '**/go.sum'
+              - '**/go.work'
+              - '**/go.work.sum'
               - '**/testdata/**'
             force:
               - '.github/workflows/**'
