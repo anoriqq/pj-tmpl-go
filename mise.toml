@@ -3,7 +3,7 @@ gotest = "go:github.com/rakyll/gotest"
 
 [tools]
 air = "latest"
-go = "latest"
+go = "1.24.5"
 gotest = "latest"
 lefthook = "latest"
 gitleaks = "latest"
