@@ -7,7 +7,7 @@ on:
 permissions: {}
 
 jobs:
-  claude-code-action:
+  claude-code-review:
     if: |
       contains(fromJSON('["anoriqq"]'), github.event.pull_request.user.login) &&
         github.event.pull_request.user.type == 'User'
