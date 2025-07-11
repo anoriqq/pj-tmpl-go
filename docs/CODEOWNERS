@@ -1,0 +1,6 @@
+# Template CODEOWNERS configuration
+# Sets @anoriqq as the owner for all files in this template repository.
+# When creating a new project from this template, update the owner to
+# the appropriate maintainer(s) for your project.
+
+* @anoriqq
