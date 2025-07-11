@@ -110,7 +110,7 @@ After cloning or creating from template:
 ## CI/CD
 
 ### GitHub Actions Workflows
-- **build-and-test** - Main CI pipeline triggered by pushes/PRs to main branch
+- **ci** - Main CI pipeline triggered by pushes/PRs to main branch
   - Runs on Go file changes, Makefile changes, CI config updates, and test data changes
   - Uses `mise` for tool management, builds with `RELEASE=1 make build`, runs `make test`
 - **claude-assistant** - AI-powered PR assistant activated by `@claude` mentions
