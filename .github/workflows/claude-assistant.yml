@@ -13,7 +13,7 @@ on:
 permissions: {}
 
 jobs:
-  claude-code-action:
+  claude-code-assistant:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
@@ -35,7 +35,7 @@ jobs:
         with:
           experimental: true
 
-      - name: Run Claude PR Action
+      - name: Run Claude Code Assistant
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         uses: anthropics/claude-code-action@beta # NOTE: beta is latest version
