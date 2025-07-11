@@ -8,7 +8,6 @@ This is a Go project template (`pj-tmpl-go`) that provides a well-structured fou
 
 ## Prerequisites
 
-- Go 1.24.2 or later
 - `mise` - Tool version manager (manages all other tools via mise.toml)
 - Tools managed by mise:
   - `gotest` - Test wrapper tool
