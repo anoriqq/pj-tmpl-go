@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      go: ${{ steps.filter.outputs.go }}
+      force: ${{ steps.filter.outputs.force }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            go:
+              - '**/*.go'
+              - '**/go.mod'
+              - '**/go.sum'
+              - '**/testdata/**'
+            force:
+              - '.github/workflows/**'
+              - '.github/actions/**'
+              - 'Makefile'
+              - 'mise.toml'
+
+  go:
+    needs: changes
+    if: ${{ needs.changes.outputs.go == 'true' || needs.changes.outputs.force == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ../actions/go
