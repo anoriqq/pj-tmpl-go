@@ -10,7 +10,8 @@ jobs:
   claude-code-review:
     if: |
       contains(fromJSON('["anoriqq"]'), github.event.pull_request.user.login) &&
-        github.event.pull_request.user.type == 'User'
+        github.event.pull_request.user.type == 'User' &&
+        !contains(github.event.pull_request.title, 'WIP')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,7 +27,6 @@ jobs:
       - uses: jdx/mise-action@v2
         with:
           experimental: true
-          version: 2025.7.3 # https://github.com/jdx/mise/discussions/5582
 
       - name: Review PR from Specific Author
         env:

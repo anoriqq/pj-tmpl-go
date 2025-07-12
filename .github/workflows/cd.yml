@@ -31,18 +31,72 @@ jobs:
               - 'Makefile'
               - 'mise.toml'
 
-  pulumi:
+  pulumi-test:
     needs: changes
     if: ${{ needs.changes.outputs.pulumi == 'true' || needs.changes.outputs.force == 'true' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
+      - run: go mod download
+        working-directory: .pulumi
+      - name: Test
+        working-directory: .pulumi
+        run: go test -v ./...
+
+  pulumi-preview:
+    needs: changes
+    if: ${{ needs.changes.outputs.pulumi == 'true' || needs.changes.outputs.force == 'true' }}
+    runs-on: ubuntu-latest
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/pulumi
+      - uses: jdx/mise-action@v2
         with:
-          github-token: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          experimental: true
+      - run: go mod download
+        working-directory: .pulumi
+      - name: Preview
+        uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: dev
+          work-dir: .pulumi
+          refresh: true
+          comment-on-pr: false # Pulumi GitHub App経由でコメントするため
+          comment-on-summary: true
+          suppress-progress: true
+          always-include-summary: true
+
+  pulumi-up:
+    needs:
+      - changes
+      - pulumi-test
+      - pulumi-preview
+    if: ${{ (needs.changes.outputs.pulumi == 'true' || needs.changes.outputs.force == 'true') && github.ref_name == github.event.repository.default_branch }}
+    runs-on: ubuntu-latest
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
+      - run: go mod download
+        working-directory: .pulumi
+      - name: Up
+        uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: dev
+          work-dir: .pulumi
+          refresh: true
+          comment-on-pr: false # Pulumi GitHub App経由でコメントするため
+          comment-on-summary: true
+          suppress-progress: true
+          always-include-summary: true
