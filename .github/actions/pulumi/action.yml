@@ -39,3 +39,4 @@ runs:
         stack-name: dev
         comment-on-pr: false
         github-token: ${{ inputs.github-token }}
+        comment-on-summary: true
