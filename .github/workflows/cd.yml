@@ -43,6 +43,9 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
       - run: go mod download
         working-directory: .pulumi
       - name: Test
