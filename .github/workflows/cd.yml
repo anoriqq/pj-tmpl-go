@@ -75,6 +75,7 @@ jobs:
   pulumi-up:
     needs:
       - changes
+      - pulumi-test
       - pulumi-preview
     if: ${{ (needs.changes.outputs.pulumi == 'true' || needs.changes.outputs.force == 'true') && github.ref_name == github.event.repository.default_branch }}
     runs-on: ubuntu-latest
