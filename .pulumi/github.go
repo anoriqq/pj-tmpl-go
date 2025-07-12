@@ -75,6 +75,7 @@ func (*GitHubResource) newRepository(
 		pulumi.Import(pulumi.ID(repo)),
 		pulumi.RetainOnDelete(true),
 	}
+	enforceDevOnlyChanges(ctx, &opts)
 	result, err := github.NewRepository(ctx, owner, args, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
@@ -93,7 +94,9 @@ func (*GitHubResource) newBranchDefault(
 		Branch:     pulumi.String(branch),
 		Rename:     pulumi.Bool(false),
 	}
-	result, err := github.NewBranchDefault(ctx, owner, args)
+	opts := []pulumi.ResourceOption{}
+	enforceDevOnlyChanges(ctx, &opts)
+	result, err := github.NewBranchDefault(ctx, owner, args, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
 	}
