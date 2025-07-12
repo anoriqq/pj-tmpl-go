@@ -71,6 +71,7 @@ jobs:
           work-dir: .pulumi
           refresh: true
           comment-on-pr: false # Pulumi GitHub App経由でコメントするため
+          github-token: ${{ secrets.GITHUB_TOKEN }} # コメント用
           comment-on-summary: true
           debug: true
           suppress-progress: true
@@ -83,6 +84,7 @@ jobs:
           work-dir: .pulumi
           refresh: true
           comment-on-pr: false # Pulumi GitHub App経由でコメントするため
+          github-token: ${{ secrets.GITHUB_TOKEN }} # コメント用
           comment-on-summary: true
           debug: true
           suppress-progress: true
