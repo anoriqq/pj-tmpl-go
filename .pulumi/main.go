@@ -6,6 +6,10 @@ import (
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
+		if _, err := GitHub.NewRepository(ctx); err != nil {
+			return err
+		}
+
 		return nil
 	})
 }
