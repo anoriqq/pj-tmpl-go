@@ -20,4 +20,4 @@ runs:
       with:
         work-dir: .pulumi
         command: preview
-        stack-name: anoriqq/pj-tmpl-go
+        stack-name: anoriqq/pj-tmpl-go/main
