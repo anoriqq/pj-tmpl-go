@@ -20,6 +20,11 @@ runs:
       shell: bash
       working-directory: .pulumi
 
+    - name: Test
+      shell: bash
+      working-directory: .pulumi
+      run: go test -v ./...
+
     - name: Preview
       uses: pulumi/actions@v6
       with:
