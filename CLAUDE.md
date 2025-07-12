@@ -111,14 +111,28 @@ After cloning or creating from template:
 
 ### GitHub Actions Workflows
 - **ci** - Main CI pipeline triggered by pushes/PRs to main branch
-  - Runs on Go file changes, Makefile changes, CI config updates, and test data changes
+  - Uses path filtering to run only on Go file changes, Makefile changes, CI config updates, and test data changes
   - Uses `mise` for tool management, builds with `RELEASE=1 make build`, runs `make test`
+  - Composite action at `.github/actions/go/action.yml` handles setup and execution
+- **cd** - Continuous deployment pipeline for infrastructure
+  - Triggered on pushes/PRs to main branch
+  - Runs Pulumi preview when `.pulumi/**` files change
+  - Uses composite action at `.github/actions/pulumi/action.yml`
 - **claude-assistant** - AI-powered PR assistant activated by `@claude` mentions
-  - Responds to issue comments, PR review comments, and issue assignments
-  - 60-minute timeout with full tool access (Bash, Edit, WebSearch, etc.)
+  - Responds to issue comments, PR review comments, issue assignments, and PR reviews
+  - 60-minute timeout with full tool access including O3 search MCP
+  - Condition checks: `@claude` mentions in comments or issue body
 - **claude-review** - Automated PR reviews for every opened/updated PR
+  - Only runs for PRs from user `anoriqq` (owner-specific review)
   - Reviews coding standards, error handling, security, test coverage, documentation
-  - Uses O3 search MCP for enhanced reasoning capabilities
+  - Uses O3 search MCP with medium context size and reasoning effort
+  - Provides reviews in Japanese as specified in `direct_prompt`
+
+### Path-Based CI Optimization
+Both CI and CD workflows use `dorny/paths-filter` to conditionally run jobs:
+- **CI triggers**: `**/*.go`, `**/go.mod`, `**/go.sum`, `**/go.work*`, `**/testdata/**`
+- **CD triggers**: `.pulumi/**`
+- **Force triggers**: `.github/workflows/**`, `.github/actions/**`, `Makefile`, `mise.toml`
 
 ### Dependency Management
 - **Renovate** - Automated dependency updates via `renovate.json`
@@ -129,3 +143,7 @@ After cloning or creating from template:
 For Claude AI workflows:
 - `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code authentication
 - `OPENAI_API_KEY` - OpenAI API access for enhanced search capabilities
+
+For Pulumi CD:
+- `PULUMI_ACCESS_TOKEN` - Pulumi cloud access
+- `PULUMI_GITHUB_TOKEN` - GitHub token for Pulumi operations

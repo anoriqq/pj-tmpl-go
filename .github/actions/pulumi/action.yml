@@ -1,0 +1,49 @@
+name: pulumi
+description: pulumi
+
+inputs:
+  github-token:
+    description: github token
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: jdx/mise-action@v2
+      with:
+        experimental: true
+        version: 2025.7.3 # https://github.com/jdx/mise/discussions/5582
+
+    - run: go mod download
+      shell: bash
+      working-directory: .pulumi
+
+    - name: Test
+      shell: bash
+      working-directory: .pulumi
+      run: go test -v ./...
+
+    - name: Preview
+      uses: pulumi/actions@v6
+      with:
+        command: preview
+        stack-name: dev
+        work-dir: .pulumi
+        refresh: true
+        comment-on-pr: false
+        github-token: ${{ inputs.github-token }}
+        comment-on-summary: true
+
+    - name: Up
+      if: github.ref_name == github.event.repository.default_branch
+      uses: pulumi/actions@v6
+      with:
+        command: up
+        stack-name: dev
+        work-dir: .pulumi
+        refresh: true
+        comment-on-pr: false
+        github-token: ${{ inputs.github-token }}
+        comment-on-summary: true

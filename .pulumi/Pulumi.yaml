@@ -1,0 +1,9 @@
+name: pj-tmpl-go
+description: Go言語プロジェクトのテンプレート
+runtime: go
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: go
+  defaultStack: dev
+  defaultBranch: main
