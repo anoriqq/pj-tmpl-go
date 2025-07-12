@@ -23,20 +23,22 @@ runs:
     - name: Preview
       uses: pulumi/actions@v6
       with:
-        work-dir: .pulumi
         command: preview
-        refresh: true
         stack-name: dev
-        color: always
+        work-dir: .pulumi
+        refresh: true
+        comment-on-pr: false
+        github-token: ${{ inputs.github-token }}
+        comment-on-summary: true
 
     - name: Up
       if: github.ref_name == github.event.repository.default_branch
       uses: pulumi/actions@v6
       with:
-        work-dir: .pulumi
         command: up
-        refresh: true
         stack-name: dev
+        work-dir: .pulumi
+        refresh: true
         comment-on-pr: false
         github-token: ${{ inputs.github-token }}
         comment-on-summary: true
