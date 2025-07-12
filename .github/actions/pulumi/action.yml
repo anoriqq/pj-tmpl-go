@@ -22,5 +22,4 @@ runs:
         command: preview
         stack-name: anoriqq/pj-tmpl-go/main
         comment-on-pr: true
-        comment-on-summary: true
         color: always
