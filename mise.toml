@@ -8,3 +8,6 @@ gotest = "latest"
 lefthook = "latest"
 gitleaks = "latest"
 pulumi = "latest"
+
+[env]
+_.file = ".env"
