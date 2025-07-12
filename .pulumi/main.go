@@ -14,7 +14,7 @@ func main() {
 			}
 		}
 
-		if err := NewRandomID(ctx, "random_11"); err != nil {
+		if err := NewRandomID(ctx, "random_12"); err != nil {
 			return err
 		}
 
