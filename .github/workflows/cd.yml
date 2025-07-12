@@ -43,6 +43,29 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/pulumi
+      - run: go mod download
+        working-directory: .pulumi
+      - name: Test
+        working-directory: .pulumi
+        run: go test -v ./...
+      - name: Preview
+        uses: pulumi/actions@v6
         with:
+          command: preview
+          stack-name: dev
+          work-dir: .pulumi
+          refresh: true
+          comment-on-pr: false
           github-token: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          comment-on-summary: true
+      - name: Up
+        if: github.ref_name == github.event.repository.default_branch
+        uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: dev
+          work-dir: .pulumi
+          refresh: true
+          comment-on-pr: false
+          github-token: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          comment-on-summary: true
