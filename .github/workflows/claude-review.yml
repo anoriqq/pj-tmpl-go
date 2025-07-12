@@ -10,7 +10,8 @@ jobs:
   claude-code-review:
     if: |
       contains(fromJSON('["anoriqq"]'), github.event.pull_request.user.login) &&
-        github.event.pull_request.user.type == 'User'
+        github.event.pull_request.user.type == 'User' &&
+        !contains(github.event.pull_request.title, 'WIP')
     runs-on: ubuntu-latest
     permissions:
       contents: read
