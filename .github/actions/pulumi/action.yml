@@ -32,4 +32,3 @@ runs:
         command: up
         refresh: true
         stack-name: dev
-        color: always
