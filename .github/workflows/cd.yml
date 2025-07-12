@@ -1,0 +1,42 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions: {}
+
+jobs:
+
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      go: ${{ steps.filter.outputs.go }}
+      force: ${{ steps.filter.outputs.force }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            pulumi:
+              - '.pulumi/**'
+            force:
+              - '.github/workflows/**'
+              - '.github/actions/**'
+              - 'Makefile'
+              - 'mise.toml'
+
+  pulumi:
+    needs: changes
+    if: ${{ needs.changes.outputs.pulumi == 'true' || needs.changes.outputs.force == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/pulumi

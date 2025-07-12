@@ -1,0 +1,24 @@
+name: pulumi
+description: pulumi
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: jdx/mise-action@v2
+      with:
+        experimental: true
+
+    - run: go mod download
+      shell: bash
+      working-directory: .pulumi
+
+    - name: Preview
+      uses: pulumi/actions@v6
+      with:
+        work-dir: .pulumi
+        command: preview
+        stack-name: anoriqq/pj-tmpl-go
+      env:
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
