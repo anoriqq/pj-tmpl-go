@@ -23,3 +23,13 @@ runs:
         refresh: true
         stack-name: dev
         color: always
+
+    - name: Up
+      if: github.ref_name == github.event.repository.default_branch
+      uses: pulumi/actions@v6
+      with:
+        work-dir: .pulumi
+        command: up
+        refresh: true
+        stack-name: dev
+        color: always
