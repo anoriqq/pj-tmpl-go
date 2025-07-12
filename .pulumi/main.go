@@ -14,7 +14,11 @@ func main() {
 			}
 		}
 
-		if err := NewRandomID(ctx); err != nil {
+		if err := NewRandomID(ctx, "random_1"); err != nil {
+			return err
+		}
+
+		if err := NewRandomID(ctx, "random_2"); err != nil {
 			return err
 		}
 
@@ -42,8 +46,8 @@ func defaultStackOnly(ctx *pulumi.Context) error {
 	return nil
 }
 
-func NewRandomID(ctx *pulumi.Context) error {
-	randomID, err := newRandomID(ctx)
+func NewRandomID(ctx *pulumi.Context, name string) error {
+	randomID, err := newRandomID(ctx, name)
 	if err != nil {
 		return err
 	}
@@ -52,16 +56,13 @@ func NewRandomID(ctx *pulumi.Context) error {
 		&pulumi.LogArgs{Resource: randomID},
 	)
 
-	ctx.Export("randomIdHex", randomID.Hex)
-	ctx.Export("randomId", randomID.ID())
-	ctx.Export("randomIdB64Url", randomID.B64Url)
+	ctx.Export(name+"_randomIdHex", randomID.Hex)
+	ctx.Export(name+"_randomIdB64Url", randomID.B64Url)
 
 	return nil
 }
 
-func newRandomID(ctx *pulumi.Context) (*random.RandomId, error) {
-	name := "random"
-
+func newRandomID(ctx *pulumi.Context, name string) (*random.RandomId, error) {
 	args := &random.RandomIdArgs{
 		Keepers:    pulumi.StringMap{},
 		ByteLength: pulumi.Int(8),
