@@ -31,7 +31,22 @@ jobs:
               - 'Makefile'
               - 'mise.toml'
 
-  pulumi:
+  pulumi-test:
+    needs: changes
+    if: ${{ needs.changes.outputs.pulumi == 'true' || needs.changes.outputs.force == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          experimental: true
+      - run: go mod download
+        working-directory: .pulumi
+      - name: Test
+        working-directory: .pulumi
+        run: go test -v ./...
+
+  pulumi-run:
     needs: changes
     if: ${{ needs.changes.outputs.pulumi == 'true' || needs.changes.outputs.force == 'true' }}
     runs-on: ubuntu-latest
@@ -48,9 +63,6 @@ jobs:
           experimental: true
       - run: go mod download
         working-directory: .pulumi
-      - name: Test
-        working-directory: .pulumi
-        run: go test -v ./...
       - name: Preview
         uses: pulumi/actions@v6
         with:
