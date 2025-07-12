@@ -11,9 +11,8 @@ import (
 type GitHubResource struct{}
 
 func (g *GitHubResource) NewRepository(ctx *pulumi.Context) (*github.Repository, error) {
-	owner := "anoriqq"
-	repo := "pj-tmpl-go"
-	branch := "main"
+	owner := ctx.Organization()
+	repo := ctx.Project()
 
 	repository, err := g.newRepository(ctx, owner, repo)
 	if err != nil {
@@ -24,12 +23,12 @@ func (g *GitHubResource) NewRepository(ctx *pulumi.Context) (*github.Repository,
 		&pulumi.LogArgs{Resource: repository},
 	)
 
-	branchDefault, err := g.newBranchDefault(ctx, owner, repo, branch)
+	branchDefault, err := g.newBranchDefault(ctx, owner, repo)
 	if err != nil {
 		return nil, err
 	}
 	ctx.Log.Info(
-		fmt.Sprintf("new: %s/%s %s", owner, repo, branch),
+		fmt.Sprintf("new: %s/%s", owner, repo),
 		&pulumi.LogArgs{Resource: branchDefault},
 	)
 
@@ -75,7 +74,6 @@ func (*GitHubResource) newRepository(
 		pulumi.Import(pulumi.ID(repo)),
 		pulumi.RetainOnDelete(true),
 	}
-	enforceDevOnlyChanges(ctx, &opts)
 	result, err := github.NewRepository(ctx, owner, args, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
@@ -87,15 +85,15 @@ func (*GitHubResource) newRepository(
 func (*GitHubResource) newBranchDefault(
 	ctx *pulumi.Context,
 	owner, repo string,
-	branch string,
 ) (*github.BranchDefault, error) {
+	branch := getDefaultBranch(ctx)
+
 	args := &github.BranchDefaultArgs{
 		Repository: pulumi.String(repo),
 		Branch:     pulumi.String(branch),
 		Rename:     pulumi.Bool(false),
 	}
 	opts := []pulumi.ResourceOption{}
-	enforceDevOnlyChanges(ctx, &opts)
 	result, err := github.NewBranchDefault(ctx, owner, args, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
@@ -104,4 +102,4 @@ func (*GitHubResource) newBranchDefault(
 	return result, nil
 }
 
-var GitHub GitHubResource
+var GitHub = &GitHubResource{}
