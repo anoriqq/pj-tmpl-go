@@ -15,7 +15,7 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      go: ${{ steps.filter.outputs.go }}
+      pulumi: ${{ steps.filter.outputs.pulumi }}
       force: ${{ steps.filter.outputs.force }}
     steps:
       - uses: actions/checkout@v4
