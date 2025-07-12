@@ -1,8 +1,6 @@
 module pj-tmpl-go
 
-go 1.22
-
-toolchain go1.24.5
+go 1.24.5
 
 require (
 	github.com/pulumi/pulumi-github/sdk/v6 v6.7.2
