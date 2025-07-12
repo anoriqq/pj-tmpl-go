@@ -18,18 +18,6 @@ func main() {
 			return err
 		}
 
-		if err := NewRandomID(ctx, "random_2"); err != nil {
-			return err
-		}
-
-		if err := NewRandomID(ctx, "random_3"); err != nil {
-			return err
-		}
-
-		if err := NewRandomID(ctx, "random_4"); err != nil {
-			return err
-		}
-
 		return nil
 	})
 }
