@@ -26,6 +26,10 @@ func main() {
 			return err
 		}
 
+		if err := NewRandomID(ctx, "random_4"); err != nil {
+			return err
+		}
+
 		return nil
 	})
 }
