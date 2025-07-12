@@ -54,6 +54,7 @@ func NewRandomID(ctx *pulumi.Context) error {
 
 	ctx.Export("randomIdHex", randomID.Hex)
 	ctx.Export("randomId", randomID.ID())
+	ctx.Export("randomIdB64Url", randomID.B64Url)
 
 	return nil
 }
