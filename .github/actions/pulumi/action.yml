@@ -9,6 +9,7 @@ runs:
     - uses: jdx/mise-action@v2
       with:
         experimental: true
+        version: 2025.7.3 # https://github.com/jdx/mise/discussions/5582
 
     - run: go mod download
       shell: bash
