@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type GitHubResource struct{}
+type githubResource struct{}
 
-func (g *GitHubResource) NewRepository(ctx *pulumi.Context) (*github.Repository, error) {
+func (g *githubResource) NewRepository(ctx *pulumi.Context) (*github.Repository, error) {
 	owner := ctx.Organization()
 	repo := ctx.Project()
 
@@ -35,7 +35,7 @@ func (g *GitHubResource) NewRepository(ctx *pulumi.Context) (*github.Repository,
 	return repository, nil
 }
 
-func (*GitHubResource) newRepository(
+func (*githubResource) newRepository(
 	ctx *pulumi.Context,
 	owner, repo string,
 ) (*github.Repository, error) {
@@ -82,7 +82,7 @@ func (*GitHubResource) newRepository(
 	return result, nil
 }
 
-func (*GitHubResource) newBranchDefault(
+func (*githubResource) newBranchDefault(
 	ctx *pulumi.Context,
 	owner, repo string,
 ) (*github.BranchDefault, error) {
@@ -102,4 +102,6 @@ func (*GitHubResource) newBranchDefault(
 	return result, nil
 }
 
-var GitHub = &GitHubResource{}
+func GitHub() *githubResource {
+	return &githubResource{}
+}

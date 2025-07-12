@@ -8,9 +8,9 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type PulumiResource struct{}
+type pulumiResource struct{}
 
-func (p *PulumiResource) NewStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
+func (p *pulumiResource) NewStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
 	stack, err := p.newStack(ctx, name)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func (p *PulumiResource) NewStack(ctx *pulumi.Context, name string) (*pulumiserv
 	return stack, nil
 }
 
-func (*PulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
+func (*pulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
 	args := &pulumiservice.StackArgs{
 		OrganizationName: pulumi.String(ctx.Organization()),
 		ProjectName:      pulumi.String(ctx.Project()),
@@ -46,4 +46,6 @@ func (*PulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservic
 	return result, nil
 }
 
-var Pulumi = &PulumiResource{}
+func Pulumi() *pulumiResource {
+	return &pulumiResource{}
+}
