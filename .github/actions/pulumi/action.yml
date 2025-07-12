@@ -1,6 +1,11 @@
 name: pulumi
 description: pulumi
 
+inputs:
+  github-token:
+    description: github token
+    required: true
+
 runs:
   using: composite
   steps:
@@ -32,3 +37,5 @@ runs:
         command: up
         refresh: true
         stack-name: dev
+        comment-on-pr: false
+        github-token: ${{ inputs.github-token }}
