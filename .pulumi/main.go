@@ -18,10 +18,6 @@ func main() {
 			return err
 		}
 
-		if err := NewRandomID(ctx, "random_2"); err != nil {
-			return err
-		}
-
 		return nil
 	})
 }
