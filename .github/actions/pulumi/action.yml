@@ -20,5 +20,6 @@ runs:
       with:
         work-dir: .pulumi
         command: preview
+        refresh: true
         stack-name: anoriqq/pj-tmpl-go/main
         color: always
