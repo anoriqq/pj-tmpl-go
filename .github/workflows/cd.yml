@@ -44,4 +44,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/pulumi
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PULUMI_GITHUB_TOKEN }}
