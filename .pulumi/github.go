@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/go-errors/errors"
 	"github.com/pulumi/pulumi-github/sdk/v6/go/github"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -76,7 +77,7 @@ func (*GitHubResource) newRepository(
 	}
 	result, err := github.NewRepository(ctx, owner, args, opts...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, 0)
 	}
 
 	return result, nil
@@ -94,7 +95,7 @@ func (*GitHubResource) newBranchDefault(
 	}
 	result, err := github.NewBranchDefault(ctx, owner, args)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, 0)
 	}
 
 	return result, nil
