@@ -1,5 +1,6 @@
 [alias]
 gotest = "go:github.com/rakyll/gotest"
+actionlint = "go:github.com/rhysd/actionlint/cmd/actionlint"
 
 [tools]
 air = "latest"
@@ -8,6 +9,7 @@ gotest = "latest"
 lefthook = "latest"
 gitleaks = "latest"
 pulumi = "latest"
+actionlint = "latest"
 
 [env]
 _.file = ".env"
