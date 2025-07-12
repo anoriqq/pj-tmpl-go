@@ -21,5 +21,4 @@ runs:
         work-dir: .pulumi
         command: preview
         stack-name: anoriqq/pj-tmpl-go/main
-        comment-on-pr: true
         color: always
