@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions: {}
 
@@ -12,14 +12,18 @@ jobs:
 
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       pull-requests: read
     outputs:
       go: ${{ steps.filter.outputs.go }}
+      cicd: ${{ steps.filter.outputs.cicd }}
       force: ${{ steps.filter.outputs.force }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         id: filter
         with:
           filters: |
@@ -30,6 +34,9 @@ jobs:
               - '**/go.work'
               - '**/go.work.sum'
               - '**/testdata/**'
+            cicd:
+              - '.github/workflows/**'
+              - '.github/actions/**'
             force:
               - '.github/workflows/**'
               - '.github/actions/**'
@@ -40,8 +47,27 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.go == 'true' || needs.changes.outputs.force == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/go
+
+  cicd:
+    needs: changes
+    if: ${{ needs.changes.outputs.cicd == 'true' || needs.changes.outputs.force == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@bfb9fa0b029db830a8c570757cee683df207a6c5 # v2.4.0
+        with:
+          experimental: true
+      - run: make lint

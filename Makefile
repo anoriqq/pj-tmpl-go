@@ -39,6 +39,14 @@ help: ## Display this help screen
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: lint
+lint: ## Run linters
+	@pinact run --check || true
+	@actionlint || true
+	@ghalint run || true
+	@ghalint act || true
+	@zizmor -q . | grep -v 'No findings to report. Good job!' || true
+
 .PHONY: gen
 gen: ## Generate code
 	@go generate ./...
