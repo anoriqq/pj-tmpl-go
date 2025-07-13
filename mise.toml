@@ -15,6 +15,7 @@ actionlint = "latest"
 ghalint = "latest"
 pinact = "latest"
 disable-checkout-persist-credentials = "latest"
+zizmor = "latest"
 
 [env]
 _.file = ".env"
