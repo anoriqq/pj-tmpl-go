@@ -12,6 +12,7 @@ gitleaks = "latest"
 pulumi = "latest"
 actionlint = "latest"
 ghalint = "latest"
+pinact = "latest"
 
 [env]
 _.file = ".env"
