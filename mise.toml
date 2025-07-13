@@ -2,6 +2,7 @@
 gotest = "go:github.com/rakyll/gotest"
 actionlint = "go:github.com/rhysd/actionlint/cmd/actionlint"
 ghalint = "go:github.com/suzuki-shunsuke/ghalint/cmd/ghalint"
+disable-checkout-persist-credentials = "go:github.com/suzuki-shunsuke/disable-checkout-persist-credentials/cmd/disable-checkout-persist-credentials"
 
 [tools]
 air = "latest"
@@ -13,6 +14,7 @@ pulumi = "latest"
 actionlint = "latest"
 ghalint = "latest"
 pinact = "latest"
+disable-checkout-persist-credentials = "latest"
 
 [env]
 _.file = ".env"
