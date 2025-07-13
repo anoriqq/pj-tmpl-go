@@ -43,6 +43,10 @@ help: ## Display this help screen
 lint: ## Run linters
 	@echo "actionlint"
 	@actionlint || true
+	@echo "ghalint run"
+	@ghalint run || true
+	@echo "ghalint act"
+	@ghalint act || true
 
 .PHONY: gen
 gen: ## Generate code
