@@ -41,6 +41,8 @@ help: ## Display this help screen
 
 .PHONY: lint
 lint: ## Run linters
+	@echo "pinact"
+	@pinact run --check || true
 	@echo "actionlint"
 	@actionlint || true
 	@echo "ghalint run"
