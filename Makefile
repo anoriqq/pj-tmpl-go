@@ -41,15 +41,10 @@ help: ## Display this help screen
 
 .PHONY: lint
 lint: ## Run linters
-	@echo "pinact"
 	@pinact run --check || true
-	@echo "actionlint"
 	@actionlint || true
-	@echo "ghalint run"
 	@ghalint run || true
-	@echo "ghalint act"
 	@ghalint act || true
-	@echo "zizmor"
 	@zizmor -q . | grep -v 'No findings to report. Good job!' || true
 
 .PHONY: gen
