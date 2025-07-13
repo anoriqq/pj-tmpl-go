@@ -49,6 +49,8 @@ lint: ## Run linters
 	@ghalint run || true
 	@echo "ghalint act"
 	@ghalint act || true
+	@echo "zizmor"
+	@zizmor -q . | grep -v 'No findings to report. Good job!' || true
 
 .PHONY: gen
 gen: ## Generate code
