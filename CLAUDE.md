@@ -29,13 +29,13 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 ## Essential Commands
 
 ### Development
-- `make help` - Display all available make targets with descriptions
-- `make build` - Build all binaries to `bin/` directory (gitignored)
-- `make test` - Run all tests with race detection (3s timeout, count=2, shuffle=on)
-- `make run` - Run the application with hot reloading using Air
-- `make gen` - Run code generation (go generate ./...)
-- `make clean` - Remove built binaries
-- `RELEASE=1 make build` - Production build (strips symbols, static linking, no race detector)
+- `mise tasks` - Display all available tasks with descriptions
+- `mise run build` - Build all binaries to `bin/` directory (gitignored)
+- `mise run test` - Run all tests with race detection (3s timeout, count=2, shuffle=on)
+- `mise run run` - Run the application with hot reloading using Air
+- `mise run gen` - Run code generation (go generate ./...)
+- `mise run clean` - Remove built binaries
+- `RELEASE=1 mise run build` - Production build (strips symbols, static linking, no race detector)
 
 ### Testing
 - `gotest ./...` - Run tests (wrapper around go test)
@@ -102,7 +102,7 @@ After cloning or creating from template:
 4. Verify git hooks are working: `lefthook run pre-commit`
 
 ### Running Tests
-- `make test` - Run all tests with race detection
+- `mise run test` - Run all tests with race detection
 - `gotest ./...` - Run tests using the gotest wrapper
 - `gotest -run TestName` - Run a specific test
 - `gotest ./internal/infra/cli -update` - Update golden test files
