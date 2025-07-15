@@ -22,7 +22,7 @@ _.file = ".env"
 
 [tasks.help]
 description = "Display available tasks"
-run = "mise tasks"
+run = "mise tasks ls -l"
 
 [tasks.lint]
 description = "Run linters"
