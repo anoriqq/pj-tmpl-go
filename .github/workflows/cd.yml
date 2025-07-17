@@ -67,7 +67,7 @@ jobs:
       - run: go mod download
         working-directory: .pulumi
       - name: Preview
-        uses: pulumi/actions@df5a93ad715135263c732ba288301bd044c383c0 # v6.3.0
+        uses: pulumi/actions@cc7494be991dba0978f7ffafaf995b0449a0998e # v6.5.0
         with:
           command: preview
           stack-name: dev
@@ -99,7 +99,7 @@ jobs:
       - run: go mod download
         working-directory: .pulumi
       - name: Up
-        uses: pulumi/actions@df5a93ad715135263c732ba288301bd044c383c0 # v6.3.0
+        uses: pulumi/actions@cc7494be991dba0978f7ffafaf995b0449a0998e # v6.5.0
         with:
           command: up
           stack-name: dev
