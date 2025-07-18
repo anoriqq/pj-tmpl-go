@@ -16,6 +16,7 @@ ghalint = "latest"
 pinact = "latest"
 disable-checkout-persist-credentials = "latest"
 zizmor = "latest"
+golangci-lint = "latest"
 
 [env]
 _.file = ".env"
