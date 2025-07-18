@@ -94,7 +94,7 @@ fi
 for pkg in $COMMAND_PACKAGES; do
     binary_name=$(echo "$pkg" | sed "s|$ROOT_PACKAGE/||g")
     binary_path="bin/$binary_name"
-    
+
     echo "Building $binary_path..."
     CGO_ENABLED=$CGO_ENABLED go build \
         -tags="$GO_BUILD_TAGS" \
