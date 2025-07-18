@@ -31,7 +31,6 @@ jobs:
             force:
               - '.github/workflows/**'
               - '.github/actions/**'
-              - 'Makefile'
               - 'mise.toml'
 
   pulumi-test:
@@ -45,6 +44,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@bfb9fa0b029db830a8c570757cee683df207a6c5 # v2.4.0
         with:
+          version: ${{ vars.MISE_VERSION }}
           experimental: true
       - run: go mod download
         working-directory: .pulumi
@@ -63,6 +63,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@bfb9fa0b029db830a8c570757cee683df207a6c5 # v2.4.0
         with:
+          version: ${{ vars.MISE_VERSION }}
           experimental: true
       - run: go mod download
         working-directory: .pulumi
@@ -95,6 +96,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@bfb9fa0b029db830a8c570757cee683df207a6c5 # v2.4.0
         with:
+          version: ${{ vars.MISE_VERSION }}
           experimental: true
       - run: go mod download
         working-directory: .pulumi

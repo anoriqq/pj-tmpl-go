@@ -19,3 +19,100 @@ zizmor = "latest"
 
 [env]
 _.file = ".env"
+
+[tasks.help]
+description = "Display available tasks"
+run = "mise tasks ls -l"
+
+[tasks.lint]
+description = "Run linters"
+depends = ["lint:*"]
+
+[tasks."lint:pinact"]
+run = "pinact run --check"
+
+[tasks."lint:actionlint"]
+run = "actionlint"
+
+[tasks."lint:ghalint-run"]
+run = "ghalint run"
+
+[tasks."lint:ghalint-act"]
+run = "ghalint act"
+
+[tasks."lint:zizmor"]
+run = "zizmor -q ."
+
+[tasks.gen]
+description = "Generate code"
+run = "go generate ./..."
+
+[tasks.test]
+description = "Run tests"
+run = "gotest -race -shuffle on -timeout 3s -count 2 -vet off ./..."
+
+[tasks.clean]
+description = "Clean up build artifacts"
+run = '''
+ROOT_PACKAGE=$(go list .)
+COMMAND_PACKAGES=$(go list ./cmd | grep -v '^\([^/]*/\)\{4\}')
+BINARIES=$(echo "$COMMAND_PACKAGES" | sed "s|$ROOT_PACKAGE/|bin/|g")
+rm -f $BINARIES
+'''
+
+[tasks.build]
+description = "Build all binaries. If RELEASE is set, it will build release binaries."
+depends = ["lint"]
+run = '''
+#!/bin/bash
+set -e
+
+# Create bin directory if it doesn't exist
+mkdir -p bin
+
+# Get package information
+ROOT_PACKAGE=$(go list .)
+COMMAND_PACKAGES=$(go list ./cmd | grep -v '^\([^/]*/\)\{4\}')
+
+# Build flags configuration
+GO_LDFLAGS=""
+GO_BUILD_TAGS="debug"
+GO_BUILD_RACE="-race"
+GO_BUILD_STATIC=""
+CGO_ENABLED=1
+
+# Configure for release build
+if [ -n "$RELEASE" ]; then
+    GO_LDFLAGS="-w -s -extldflags '-static'"
+    GO_BUILD_TAGS="release,netgo"
+    GO_BUILD_RACE=""
+    GO_BUILD_STATIC="-a -installsuffix netgo"
+    CGO_ENABLED=0
+fi
+
+# Build each binary
+for pkg in $COMMAND_PACKAGES; do
+    binary_name=$(echo "$pkg" | sed "s|$ROOT_PACKAGE/||g")
+    binary_path="bin/$binary_name"
+
+    echo "Building $binary_path..."
+    CGO_ENABLED=$CGO_ENABLED go build \
+        -tags="$GO_BUILD_TAGS" \
+        $GO_BUILD_RACE \
+        $GO_BUILD_STATIC \
+        -ldflags "$GO_LDFLAGS" \
+        -o "$binary_path" \
+        "$pkg"
+done
+
+echo "Binaries built in bin/"
+'''
+
+[tasks.run]
+description = "Run the main application"
+run = '''
+ROOT_PACKAGE=$(go list .)
+COMMAND_PACKAGES=$(go list ./cmd | grep -v '^\([^/]*/\)\{4\}')
+BINARIES=$(echo "$COMMAND_PACKAGES" | sed "s|$ROOT_PACKAGE/|bin/|g")
+air -c .air.toml -build.bin $BINARIES
+'''

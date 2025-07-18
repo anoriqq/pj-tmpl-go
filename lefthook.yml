@@ -18,6 +18,8 @@ pre-commit:
   jobs:
     - name: gitleaks
       run: gitleaks protect --staged
+    - name: lint
+      run: mise run lint
     - name: main branch protection
       skip:
         - run: test "$(pwd)" == "${HOME}"

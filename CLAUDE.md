@@ -14,6 +14,10 @@ This is a Go project template (`pj-tmpl-go`) that provides a well-structured fou
   - `lefthook` - Git hooks manager
   - `gitleaks` - Secret scanning tool
   - `air` - Hot reload development server
+  - `actionlint` - GitHub Actions linter
+  - `ghalint` - GitHub Actions security linter
+  - `pinact` - Pin GitHub Actions versions
+  - `zizmor` - GitHub Actions security scanner
 
 ## Template Usage
 
@@ -29,13 +33,14 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 ## Essential Commands
 
 ### Development
-- `make help` - Display all available make targets with descriptions
-- `make build` - Build all binaries to `bin/` directory (gitignored)
-- `make test` - Run all tests with race detection (3s timeout, count=2, shuffle=on)
-- `make run` - Run the application with hot reloading using Air
-- `make gen` - Run code generation (go generate ./...)
-- `make clean` - Remove built binaries
-- `RELEASE=1 make build` - Production build (strips symbols, static linking, no race detector)
+- `mise tasks` - Display all available tasks with descriptions
+- `mise run build` - Build all binaries to `bin/` directory (gitignored)
+- `mise run test` - Run all tests with race detection (3s timeout, count=2, shuffle=on)
+- `mise run run` - Run the application with hot reloading using Air
+- `mise run gen` - Run code generation (go generate ./...)
+- `mise run clean` - Remove built binaries
+- `mise run lint` - Run all linters (actionlint, ghalint, pinact, zizmor)
+- `RELEASE=1 mise run build` - Production build (strips symbols, static linking, no race detector)
 
 ### Testing
 - `gotest ./...` - Run tests (wrapper around go test)
@@ -102,7 +107,7 @@ After cloning or creating from template:
 4. Verify git hooks are working: `lefthook run pre-commit`
 
 ### Running Tests
-- `make test` - Run all tests with race detection
+- `mise run test` - Run all tests with race detection
 - `gotest ./...` - Run tests using the gotest wrapper
 - `gotest -run TestName` - Run a specific test
 - `gotest ./internal/infra/cli -update` - Update golden test files
@@ -111,8 +116,8 @@ After cloning or creating from template:
 
 ### GitHub Actions Workflows
 - **ci** - Main CI pipeline triggered by pushes/PRs to main branch
-  - Uses path filtering to run only on Go file changes, Makefile changes, CI config updates, and test data changes
-  - Uses `mise` for tool management, builds with `RELEASE=1 make build`, runs `make test`
+  - Uses path filtering to run only on Go file changes, mise.toml changes, CI config updates, and test data changes
+  - Uses `mise` for tool management, builds with `RELEASE=1 mise run build`, runs `mise run test`
   - Composite action at `.github/actions/go/action.yml` handles setup and execution
 - **cd** - Continuous deployment pipeline for infrastructure
   - Triggered on pushes/PRs to main branch
@@ -132,7 +137,7 @@ After cloning or creating from template:
 Both CI and CD workflows use `dorny/paths-filter` to conditionally run jobs:
 - **CI triggers**: `**/*.go`, `**/go.mod`, `**/go.sum`, `**/go.work*`, `**/testdata/**`
 - **CD triggers**: `.pulumi/**`
-- **Force triggers**: `.github/workflows/**`, `.github/actions/**`, `Makefile`, `mise.toml`
+- **Force triggers**: `.github/workflows/**`, `.github/actions/**`, `mise.toml`
 
 ### Dependency Management
 - **Renovate** - Automated dependency updates via `renovate.json`
