@@ -26,13 +26,22 @@ run = "mise tasks ls -l"
 
 [tasks.lint]
 description = "Run linters"
-run = '''
-pinact run --check || true
-actionlint || true
-ghalint run || true
-ghalint act || true
-zizmor -q . | grep -v 'No findings to report. Good job!' || true
-'''
+depends = ["lint:*"]
+
+[tasks."lint:pinact"]
+run = "pinact run --check"
+
+[tasks."lint:actionlint"]
+run = "actionlint"
+
+[tasks."lint:ghalint-run"]
+run = "ghalint run"
+
+[tasks."lint:ghalint-act"]
+run = "ghalint act"
+
+[tasks."lint:zizmor"]
+run = "zizmor -q ."
 
 [tasks.gen]
 description = "Generate code"
