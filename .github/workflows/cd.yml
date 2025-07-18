@@ -31,7 +31,6 @@ jobs:
             force:
               - '.github/workflows/**'
               - '.github/actions/**'
-              - 'Makefile'
               - 'mise.toml'
 
   pulumi-test:

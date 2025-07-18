@@ -16,8 +16,8 @@ runs:
       shell: bash
       env:
         RELEASE: 1
-      run: make build
+      run: mise run build
 
     - name: Test
       shell: bash
-      run: make test
+      run: mise run test

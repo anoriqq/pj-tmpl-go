@@ -40,7 +40,6 @@ jobs:
             force:
               - '.github/workflows/**'
               - '.github/actions/**'
-              - 'Makefile'
               - 'mise.toml'
 
   go:
@@ -70,4 +69,4 @@ jobs:
       - uses: jdx/mise-action@bfb9fa0b029db830a8c570757cee683df207a6c5 # v2.4.0
         with:
           experimental: true
-      - run: make lint
+      - run: mise run lint
