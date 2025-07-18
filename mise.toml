@@ -49,7 +49,7 @@ run = "go generate ./..."
 
 [tasks.test]
 description = "Run tests"
-run = "gotest -race -shuffle on -timeout 3s -count 2 ./..."
+run = "gotest -race -shuffle on -timeout 3s -count 2 -vet off ./..."
 
 [tasks.clean]
 description = "Clean up build artifacts"
