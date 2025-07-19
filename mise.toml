@@ -44,6 +44,9 @@ run = "ghalint act"
 [tasks."lint:zizmor"]
 run = "zizmor -q ."
 
+[tasks."lint:golangci-lint"]
+run = "golangci-lint run --config .golangci.yml"
+
 [tasks.gen]
 description = "Generate code"
 run = "go generate ./..."
