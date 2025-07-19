@@ -2,7 +2,6 @@ package port
 
 import (
 	"flag"
-	"fmt"
 	"strconv"
 
 	"github.com/go-errors/errors"
@@ -28,7 +27,7 @@ func (p *Port) Set(s string) error {
 
 // String implements flag.Value.
 func (p Port) String() string {
-	return fmt.Sprintf("%d", p.value)
+	return strconv.FormatUint(p.value, 10)
 }
 
 var _ flag.Value = (*Port)(nil)

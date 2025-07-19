@@ -120,6 +120,7 @@ func (h *Handler) computeAttrs(
 	}
 
 	var attrs map[string]any
+
 	err := json.Unmarshal(h.b.Bytes(), &attrs)
 	if err != nil {
 		return nil, fmt.Errorf("error when unmarshaling inner handler's Handle result: %w", err)
@@ -137,9 +138,11 @@ func suppressDefaults(
 			a.Key == slog.MessageKey {
 			return slog.Attr{}
 		}
+
 		if next == nil {
 			return a
 		}
+
 		return next(groups, a)
 	}
 }
@@ -148,6 +151,7 @@ func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
 	if opts == nil {
 		opts = &slog.HandlerOptions{}
 	}
+
 	b := &bytes.Buffer{}
 
 	return &Handler{

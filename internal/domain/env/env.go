@@ -16,6 +16,7 @@ var _ flag.Value = (*Env)(nil)
 // Set implements flag.Value.
 func (i *Env) Set(s string) error {
 	slog.Info("set env", "value", s)
+
 	e, err := EnvString(s)
 	if err != nil {
 		return err

@@ -13,7 +13,8 @@ func NewStackTraceSlogAttr(err error) slog.Attr {
 	}
 
 	// go-errors/errors の Error かどうか
-	if goerror, ok := err.(*errors.Error); ok {
+	goerror := &errors.Error{}
+	if errors.As(err, &goerror) {
 		return slog.Any("stacktrace", goerror.StackFrames())
 	}
 

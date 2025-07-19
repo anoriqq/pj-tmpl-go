@@ -19,7 +19,8 @@ func init() {
 func main() {
 	ctx := context.Background()
 
-	if err := run(ctx); err != nil {
+	err := run(ctx)
+	if err != nil {
 		slog.Error("failed to run", slog.Any("err", err), log.NewStackTraceSlogAttr(err))
 		os.Exit(1)
 	}
@@ -37,10 +38,12 @@ func run(ctx context.Context) error {
 	c := cli.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
 
 	args := os.Args[1:]
+
 	opts, err := cli.NewOptions(args)
 	if err != nil {
 		return err
 	}
+
 	if opts.Help() {
 		return nil
 	}
@@ -48,9 +51,11 @@ func run(ctx context.Context) error {
 	setupLogger(opts.Env())
 
 	slog.Info("start")
+
 	if err := c.Main(ctx, opts); err != nil {
 		return err
 	}
+
 	slog.Info("end")
 
 	return nil

@@ -20,6 +20,7 @@ func init() {
 
 func TestCLI_Run(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+
 	t.Cleanup(func() {
 		cancel()
 	})
@@ -31,6 +32,7 @@ func TestCLI_Run(t *testing.T) {
 
 	sut := cli.NewCLI(stdout, stderr, stdin, tempDir)
 	args := []string{"-env", "lcl"}
+
 	opts, err := cli.NewOptions(args)
 	if err != nil {
 		t.Fatal(err)
@@ -39,7 +41,7 @@ func TestCLI_Run(t *testing.T) {
 	// Act
 	err = sut.Main(ctx, opts)
 
-	//' Assert
+	// ' Assert
 	if !errors.Is(err, nil) {
 		t.Fatalf("Run failed: %v", err)
 	}
@@ -48,6 +50,7 @@ func TestCLI_Run(t *testing.T) {
 	if diff := c.Check("_stdout", stdout); diff != "" {
 		t.Error("stdout\n", diff)
 	}
+
 	if diff := c.Check("_stderr", stderr); diff != "" {
 		t.Error("stderr\n", diff)
 	}

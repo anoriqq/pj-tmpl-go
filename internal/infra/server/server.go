@@ -16,8 +16,10 @@ func Serve(ctx context.Context, port port.Port) error {
 	}
 
 	errCh := make(chan error, 1)
+
 	go func() {
-		if err := s.ListenAndServe(); err != nil {
+		err := s.ListenAndServe()
+		if err != nil {
 			errCh <- errors.Wrap(err, 0)
 		}
 	}()
@@ -35,7 +37,8 @@ func Serve(ctx context.Context, port port.Port) error {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		if err := s.Shutdown(ctx); err != nil {
+		err := s.Shutdown(ctx)
+		if err != nil {
 			return errors.Wrap(err, 0)
 		}
 	}

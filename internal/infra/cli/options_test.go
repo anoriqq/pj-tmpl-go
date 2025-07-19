@@ -2,7 +2,6 @@ package cli_test
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"testing"
 
@@ -12,7 +11,6 @@ import (
 
 func TestNewOptions(t *testing.T) {
 	// 一部のサブテストが [testing.T.Setenv] を使っているので並列化しない
-
 	environments := []string{"lcl", "dev", "stg", "prd"}
 
 	t.Run("デフォルト値を取得できる", func(t *testing.T) {
@@ -27,6 +25,7 @@ func TestNewOptions(t *testing.T) {
 		if !errors.Is(err, nil) {
 			t.Fatalf("オプションの取得に失敗: %v", err)
 		}
+
 		want := "8000"
 		if got.Port().String() != want {
 			t.Errorf("デフォルト値である`%s`を得るはずが`%d`を得た", want, got.Port())
@@ -35,7 +34,6 @@ func TestNewOptions(t *testing.T) {
 
 	t.Run("環境変数からオプションを取得できる", func(t *testing.T) {
 		// [testing.T.Setenv] を使っているので並列化しない
-
 		want := environments[rand.Intn(len(environments))]
 		t.Setenv("ENV", want)
 		t.Logf("環境変数を設定: %s", want)
@@ -47,6 +45,7 @@ func TestNewOptions(t *testing.T) {
 		if !errors.Is(err, nil) {
 			t.Fatalf("オプションの取得に失敗: %v", err)
 		}
+
 		if got.Env().String() != want {
 			t.Errorf("設定した`%s`を得るはずが`%s`を得た", want, got.Env())
 		}
@@ -65,6 +64,7 @@ func TestNewOptions(t *testing.T) {
 		if !errors.Is(err, nil) {
 			t.Fatalf("オプションの取得に失敗: %v", err)
 		}
+
 		if got.Env().String() != want {
 			t.Errorf("設定した`%s`を得るはずが`%s`を得た", want, got.Env())
 		}
@@ -72,9 +72,8 @@ func TestNewOptions(t *testing.T) {
 
 	t.Run("環境変数とフラグの両方が設定されている場合はフラグが優先される", func(t *testing.T) {
 		// [testing.T.Setenv] を使っているので並列化しない
-
 		fromEnv := gofakeit.Word()
-		t.Setenv("ENV", fmt.Sprint(fromEnv))
+		t.Setenv("ENV", fromEnv)
 		t.Logf("環境変数を設定: %s", fromEnv)
 
 		fromFlag := environments[rand.Intn(len(environments))]
@@ -87,6 +86,7 @@ func TestNewOptions(t *testing.T) {
 		if !errors.Is(err, nil) {
 			t.Fatalf("オプションの取得に失敗: %v", err)
 		}
+
 		if got.Env().String() != fromFlag {
 			t.Errorf("flagで設定した`%s`を得るはずが`%s`を得た", fromFlag, got.Env())
 		}

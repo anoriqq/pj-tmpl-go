@@ -31,7 +31,8 @@ func (c *cli) Main(ctx context.Context, opts options) error {
 	default:
 	}
 
-	if err := server.Serve(ctx, opts.Port()); err != nil {
+	err := server.Serve(ctx, opts.Port())
+	if err != nil {
 		return err
 	}
 

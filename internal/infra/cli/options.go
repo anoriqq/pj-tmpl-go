@@ -53,11 +53,13 @@ func NewOptions(args []string) (options, error) {
 		port: port.New(8000),
 	}
 	fs.BoolVar(&opts.help, "help", opts.help, "Show help message and exit")
+
 	envUsage := fmt.Sprintf("Environment to use (%s)", strings.Join(env.EnvStrings(), ","))
 	fs.Var(&opts.env, "env", envUsage)
 	fs.Var(&opts.port, "port", "Port to listen on")
 
-	if parseErr := fs.Parse(args); parseErr != nil {
+	parseErr := fs.Parse(args)
+	if parseErr != nil {
 		return options{}, errors.Wrap(parseErr, 0)
 	}
 
