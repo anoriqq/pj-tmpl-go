@@ -32,15 +32,20 @@ func Serve(ctx context.Context, port port.Port) error {
 		}
 	}
 
-	// Shutdown the server gracefully
-	{
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
+	gracefulShutdown(s)
 
-		err := s.Shutdown(ctx)
-		if err != nil {
-			return errors.Wrap(err, 0)
-		}
+	return nil
+}
+
+func gracefulShutdown(s *http.Server) error {
+	ctx := context.Background()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	err := s.Shutdown(ctx)
+	if err != nil {
+		return errors.Wrap(err, 0)
 	}
 
 	return nil
