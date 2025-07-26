@@ -37,13 +37,13 @@ func Serve(ctx context.Context, port port.Port) error {
 	return nil
 }
 
-func gracefulShutdown(s *http.Server) error {
+func gracefulShutdown(srv *http.Server) error {
 	ctx := context.Background()
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	err := s.Shutdown(ctx)
+	err := srv.Shutdown(ctx)
 	if err != nil {
 		return errors.Wrap(err, 0)
 	}

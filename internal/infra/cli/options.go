@@ -45,39 +45,39 @@ var envNameReplacer = strings.NewReplacer("-", "_", ".", "_")
 // NewOptions CLIのオプションを取得する
 // フラグと環境変数から値を取得する。両方に値が設定されている場合はフラグの値を採用する。
 func NewOptions(args []string) (options, error) {
-	fs := flag.NewFlagSet("app", flag.ContinueOnError)
+	flagSet := flag.NewFlagSet("app", flag.ContinueOnError)
 
 	opts := options{
 		help: false,
 		env:  env.LCL,
 		port: port.New(8000),
 	}
-	fs.BoolVar(&opts.help, "help", opts.help, "Show help message and exit")
+	flagSet.BoolVar(&opts.help, "help", opts.help, "Show help message and exit")
 
 	envUsage := fmt.Sprintf("Environment to use (%s)", strings.Join(env.EnvStrings(), ","))
-	fs.Var(&opts.env, "env", envUsage)
-	fs.Var(&opts.port, "port", "Port to listen on")
+	flagSet.Var(&opts.env, "env", envUsage)
+	flagSet.Var(&opts.port, "port", "Port to listen on")
 
-	parseErr := fs.Parse(args)
+	parseErr := flagSet.Parse(args)
 	if parseErr != nil {
 		return options{}, errors.Wrap(parseErr, 0)
 	}
 
-	fs.VisitAll(func(f *flag.Flag) {
-		if f.Value.String() != f.DefValue {
+	flagSet.VisitAll(func(flg *flag.Flag) {
+		if flg.Value.String() != flg.DefValue {
 			// フラグに値が指定されている場合はそれをそのまま使うのでスキップ
 			return
 		}
 
-		envName := strings.ToUpper(envNameReplacer.Replace(f.Name))
+		envName := strings.ToUpper(envNameReplacer.Replace(flg.Name))
 		if env := os.Getenv(envName); env != "" {
-			f.Value.Set(env)
+			flg.Value.Set(env)
 		}
 	})
 
 	if opts.help {
 		fmt.Fprintf(os.Stderr, "usage: cmd [flags]\n")
-		fs.PrintDefaults()
+		flagSet.PrintDefaults()
 	}
 
 	return opts, nil
