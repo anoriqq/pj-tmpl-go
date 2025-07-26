@@ -11,3 +11,5 @@ formatters:
     - gofumpt
     - goimports
     - gofmt
+output:
+  show-stats: false
