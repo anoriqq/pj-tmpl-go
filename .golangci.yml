@@ -3,6 +3,10 @@ linters:
   default: all
   disable:
     - wsl
+  settings:
+    wrapcheck:
+      ignore-package-globs:
+        - github.com/anoriqq/pj-tmpl-go/*
 formatters:
   enable:
     - gci
