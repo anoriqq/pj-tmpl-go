@@ -9,6 +9,7 @@ import (
 	"github.com/anoriqq/pj-tmpl-go/internal/domain/env"
 	"github.com/anoriqq/pj-tmpl-go/internal/infra/cli"
 	"github.com/anoriqq/pj-tmpl-go/internal/infra/log"
+	"github.com/go-errors/errors"
 )
 
 func init() {
@@ -32,7 +33,7 @@ func run(ctx context.Context) error {
 
 	cwd, err := os.Getwd()
 	if err != nil {
-		return err
+		return errors.Wrap(err, 0)
 	}
 
 	c := cli.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
