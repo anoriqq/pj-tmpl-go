@@ -6,7 +6,7 @@ require (
 	github.com/go-errors/errors v1.5.1
 	github.com/pulumi/pulumi-github/sdk/v6 v6.7.3
 	github.com/pulumi/pulumi-pulumiservice/sdk v0.30.0
-	github.com/pulumi/pulumi/sdk/v3 v3.186.0
+	github.com/pulumi/pulumi/sdk/v3 v3.187.0
 )
 
 require (
