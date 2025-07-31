@@ -1,3 +1,6 @@
+/*
+Package main implements the entry point for the application.
+*/
 package main
 
 import (

@@ -11,7 +11,7 @@ linters:
       ignore-decls:
         - w http.ResponseWriter
         - r *http.Request
-        - c *cli.cli
+        - c *cli.CLI # 名前衝突を避けるとこれ以上長くも短くもできない
 formatters:
   enable:
     - gci

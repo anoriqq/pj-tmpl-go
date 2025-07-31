@@ -12,27 +12,41 @@ import (
 	"github.com/go-errors/errors"
 )
 
-type options struct {
-	help bool
-	env  env.Env
-	port port.Port
+// Options CLIのオプション
+type Options struct {
+	help *bool
+	env  *env.Env
+	port *port.Port
 }
 
-var _ slog.LogValuer = (options{})
+var _ slog.LogValuer = (Options{})
 
-func (o options) Help() bool {
-	return o.help
+// Help ヘルプフラグを取得する
+func (o Options) Help() bool {
+	if o.help == nil {
+		return false
+	}
+	return *o.help
 }
 
-func (o options) Env() env.Env {
-	return o.env
+// Env 環境を取得する
+func (o Options) Env() env.Env {
+	if o.env == nil {
+		return env.LCL
+	}
+	return *o.env
 }
 
-func (o options) Port() port.Port {
-	return o.port
+// Port リスニングポートを取得する
+func (o Options) Port() port.Port {
+	if o.port == nil {
+		return port.New(8000)
+	}
+	return *o.port
 }
 
-func (o options) LogValue() slog.Value {
+// LogValue implements [slog.LogValuer]
+func (o Options) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Bool("help", o.Help()),
 		slog.String("env", o.Env().String()),
@@ -44,23 +58,19 @@ var envNameReplacer = strings.NewReplacer("-", "_", ".", "_")
 
 // NewOptions CLIのオプションを取得する
 // フラグと環境変数から値を取得する。両方に値が設定されている場合はフラグの値を採用する。
-func NewOptions(args []string) (options, error) {
+func NewOptions(args []string) (Options, error) {
 	flagSet := flag.NewFlagSet("app", flag.ContinueOnError)
 
-	opts := options{
-		help: false,
-		env:  env.LCL,
-		port: port.New(8000),
-	}
-	flagSet.BoolVar(&opts.help, "help", opts.help, "Show help message and exit")
+	opts := Options{}
+	flagSet.BoolVar(opts.help, "help", opts.Help(), "Show help message and exit")
 
 	envUsage := fmt.Sprintf("Environment to use (%s)", strings.Join(env.EnvStrings(), ","))
-	flagSet.Var(&opts.env, "env", envUsage)
-	flagSet.Var(&opts.port, "port", "Port to listen on")
+	flagSet.Var(opts.env, "env", envUsage)
+	flagSet.Var(opts.port, "port", "Port to listen on")
 
 	parseErr := flagSet.Parse(args)
 	if parseErr != nil {
-		return options{}, errors.Wrap(parseErr, 0)
+		return Options{}, errors.Wrap(parseErr, 0)
 	}
 
 	flagSet.VisitAll(func(flg *flag.Flag) {
@@ -75,7 +85,7 @@ func NewOptions(args []string) (options, error) {
 		}
 	})
 
-	if opts.help {
+	if opts.Help() {
 		fmt.Fprintf(os.Stderr, "usage: cmd [flags]\n")
 		flagSet.PrintDefaults()
 	}

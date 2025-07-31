@@ -36,6 +36,7 @@ func colorize(colorCode int, v string) string {
 	return fmt.Sprintf("\033[%sm%s%s", strconv.Itoa(colorCode), v, reset)
 }
 
+// Handler ログレコードをきれいなJSONとしてフォーマットするカスタムslogハンドラー
 type Handler struct {
 	w io.Writer
 	h slog.Handler
@@ -45,10 +46,12 @@ type Handler struct {
 
 var _ slog.Handler = (*Handler)(nil)
 
+// Enabled implements [slog.Handler] interface.
 func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 	return h.h.Enabled(ctx, level)
 }
 
+// WithAttrs implements [slog.Handler] interface.
 func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return &Handler{
 		w: h.w,
@@ -58,6 +61,7 @@ func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	}
 }
 
+// WithGroup implements [slog.Handler] interface.
 func (h *Handler) WithGroup(name string) slog.Handler {
 	return &Handler{
 		w: h.w,
@@ -71,6 +75,7 @@ const (
 	timeFormat = "[15:04:05.000]"
 )
 
+// Handle implements [slog.Handler] interface.
 func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 	level := rec.Level.String() + ":"
 
@@ -147,6 +152,7 @@ func suppressDefaults(
 	}
 }
 
+// NewPrettyJSONSlogHandler きれいなJSON形式でログを出力するslogハンドラーを作成する
 func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
 	if opts == nil {
 		opts = &slog.HandlerOptions{}

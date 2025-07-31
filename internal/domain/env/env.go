@@ -8,12 +8,14 @@ import (
 	"log/slog"
 )
 
+// Env 環境
+//
 //go:generate go run github.com/anoriqq/enumer@latest -type=Env -transform=lower
 type Env int
 
 var _ flag.Value = (*Env)(nil)
 
-// Set implements flag.Value.
+// Set implements [flag.Value]
 func (i *Env) Set(s string) error {
 	slog.Info("set env", "value", s)
 
@@ -27,6 +29,7 @@ func (i *Env) Set(s string) error {
 	return nil
 }
 
+// 環境一覧
 const (
 	_ Env = iota
 	LCL

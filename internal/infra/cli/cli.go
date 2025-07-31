@@ -9,14 +9,16 @@ import (
 	"github.com/go-errors/errors"
 )
 
-type cli struct {
+// CLI Command Line Interface
+type CLI struct {
 	stdout io.Writer
 	stderr io.Writer
 	stdin  io.Reader
 	cwd    string
 }
 
-func (c *cli) Main(ctx context.Context, opts options) error {
+// Main メインの処理を実行する
+func (c *CLI) Main(ctx context.Context, opts Options) error {
 	if c == nil {
 		return errors.New("cli is nil")
 	}
@@ -39,8 +41,9 @@ func (c *cli) Main(ctx context.Context, opts options) error {
 	return nil
 }
 
-func NewCLI(stdout, stderr io.Writer, stdin io.Reader, cwd string) *cli {
-	return &cli{
+// NewCLI cliを作成する
+func NewCLI(stdout, stderr io.Writer, stdin io.Reader, cwd string) *CLI {
+	return &CLI{
 		stdout: stdout,
 		stderr: stderr,
 		stdin:  stdin,

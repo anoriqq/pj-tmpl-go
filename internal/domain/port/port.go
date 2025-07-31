@@ -9,6 +9,7 @@ import (
 
 const maxPortValue = 65535
 
+// Port ポート番号
 type Port struct {
 	value uint64
 }
@@ -32,6 +33,7 @@ func (p Port) String() string {
 
 var _ flag.Value = (*Port)(nil)
 
+// New ポートを作成する
 func New(v uint64) Port {
 	v = min(v, maxPortValue)
 
