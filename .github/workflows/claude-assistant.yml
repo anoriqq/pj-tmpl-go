@@ -41,7 +41,7 @@ jobs:
       - name: Run Claude Code Assistant
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        uses: anthropics/claude-code-action@6672e9b357e9c7bac9626573784462f9bd1e4212 # v0.0.49
+        uses: anthropics/claude-code-action@1f6e3225b088699398302ad624c21c1d780d082f # v0.0.50
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           timeout_minutes: "60"
