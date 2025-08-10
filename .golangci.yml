@@ -19,7 +19,6 @@ linters:
     - exhaustruct
     - errcheck
     - depguard
-    - exhaustive
     - nolintlint
   settings:
     wrapcheck:

@@ -25,6 +25,8 @@ func GetLogger(e env.Env) *slog.Logger {
 			Level: slog.LevelDebug,
 		})
 		return slog.New(handler)
+	case env.STG, env.PRD:
+		fallthrough
 	default:
 		handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 			Level: slog.LevelInfo,
