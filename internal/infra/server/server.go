@@ -53,6 +53,7 @@ func Serve(ctx context.Context, p port.Port) error {
 	return nil
 }
 
+// nolint:contextcheck
 func gracefulShutdown(srv *http.Server) error {
 	ctx := context.Background()
 

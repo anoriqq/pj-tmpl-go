@@ -20,7 +20,7 @@ linters:
     - errcheck
     - depguard
     - exhaustive
-    - contextcheck
+    - nolintlint
   settings:
     wrapcheck:
       ignore-package-globs:
