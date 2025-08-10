@@ -1,7 +1,7 @@
 package server
 
 import (
-	"io"
+	"encoding/json"
 	"log/slog"
 	"net/http"
 )
@@ -15,8 +15,18 @@ func newHandler() *http.ServeMux {
 			slog.String("method", r.Method),
 			slog.String("url", r.URL.String()))
 
+		type resp struct {
+			Status string `json:"status"`
+		}
+		b, err := json.Marshal(resp{Status: "ok"})
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, "Hello, World!\n")
+		w.Write(b)
 	})
 
 	return mux

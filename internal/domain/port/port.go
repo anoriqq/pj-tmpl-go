@@ -2,6 +2,7 @@ package port
 
 import (
 	"flag"
+	"fmt"
 	"strconv"
 
 	"github.com/go-errors/errors"
@@ -11,30 +12,33 @@ const maxPortValue = 65535
 
 // Port ポート番号
 type Port struct {
-	value uint64
+	value uint16
 }
 
-// Set implements flag.Value.
+// Set implements [flag.Value].
 func (p *Port) Set(s string) error {
 	v, err := strconv.ParseUint(s, 10, 64)
 	if err != nil {
 		return errors.Wrap(err, 0)
 	}
 
-	*p = New(v)
+	*p = New(uint16(v))
 
 	return nil
 }
 
-// String implements flag.Value.
-func (p Port) String() string {
-	return strconv.FormatUint(p.value, 10)
+// String implements [flag.Value].
+func (p *Port) String() string {
+	if p.value == 0 {
+		return "80"
+	}
+	return fmt.Sprintf("%d", p.value)
 }
 
 var _ flag.Value = (*Port)(nil)
 
-// New ポートを作成する
-func New(v uint64) Port {
+// New ポート番号を作成する
+func New(v uint16) Port {
 	v = min(v, maxPortValue)
 
 	return Port{value: v}

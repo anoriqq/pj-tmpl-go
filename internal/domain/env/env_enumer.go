@@ -9,16 +9,15 @@ import (
 	"github.com/go-errors/errors"
 )
 
-const _EnvName = "lcldevstgprd"
+const _EnvName = "prdstgdevlcl"
 
 var _EnvIndex = [...]uint8{0, 3, 6, 9, 12}
 
-const _EnvLowerName = "lcldevstgprd"
+const _EnvLowerName = "prdstgdevlcl"
 
 func (i Env) String() string {
-	i -= 1
 	if i < 0 || i >= Env(len(_EnvIndex)-1) {
-		return fmt.Sprintf("Env(%d)", i+1)
+		return fmt.Sprintf("Env(%d)", i)
 	}
 	return _EnvName[_EnvIndex[i]:_EnvIndex[i+1]]
 }
@@ -27,23 +26,23 @@ func (i Env) String() string {
 // Re-run the stringer command to generate them again.
 func _EnvNoOp() {
 	var x [1]struct{}
-	_ = x[LCL-(1)]
+	_ = x[PRD-(0)]
+	_ = x[STG-(1)]
 	_ = x[DEV-(2)]
-	_ = x[STG-(3)]
-	_ = x[PRD-(4)]
+	_ = x[LCL-(3)]
 }
 
-var _EnvValues = []Env{LCL, DEV, STG, PRD}
+var _EnvValues = []Env{PRD, STG, DEV, LCL}
 
 var _EnvNameToValueMap = map[string]Env{
-	_EnvName[0:3]:       LCL,
-	_EnvLowerName[0:3]:  LCL,
-	_EnvName[3:6]:       DEV,
-	_EnvLowerName[3:6]:  DEV,
-	_EnvName[6:9]:       STG,
-	_EnvLowerName[6:9]:  STG,
-	_EnvName[9:12]:      PRD,
-	_EnvLowerName[9:12]: PRD,
+	_EnvName[0:3]:       PRD,
+	_EnvLowerName[0:3]:  PRD,
+	_EnvName[3:6]:       STG,
+	_EnvLowerName[3:6]:  STG,
+	_EnvName[6:9]:       DEV,
+	_EnvLowerName[6:9]:  DEV,
+	_EnvName[9:12]:      LCL,
+	_EnvLowerName[9:12]: LCL,
 }
 
 var _EnvNames = []string{
