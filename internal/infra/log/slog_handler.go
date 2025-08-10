@@ -9,6 +9,8 @@ import (
 	"log/slog"
 	"strconv"
 	"sync"
+
+	"github.com/go-errors/errors"
 )
 
 const (
@@ -100,13 +102,15 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 		return fmt.Errorf("error when marshaling attrs: %w", err)
 	}
 
-	fmt.Fprintln(
+	if _, err := fmt.Fprintln(
 		h.w,
 		colorize(lightGray, rec.Time.Format(timeFormat)),
 		level,
 		colorize(white, rec.Message),
 		colorize(darkGray, string(jsonBytes)),
-	)
+	); err != nil {
+		return errors.Wrap(err, 0)
+	}
 
 	return nil
 }
