@@ -18,7 +18,6 @@ linters:
     - funcorder
     - exhaustruct
     - errcheck
-    - depguard
     - nolintlint
   settings:
     wrapcheck:
@@ -28,7 +27,19 @@ linters:
       ignore-decls:
         - w http.ResponseWriter
         - r *http.Request
-        - c *cli.CLI # 名前衝突を避けるとこれ以上長くも短くもできない
+    depguard:
+      rules:
+        main:
+          allow:
+            - $gostd
+            - github.com/anoriqq/pj-tmpl-go
+            - github.com/go-errors/errors
+        do_not_import_infra_from_domain:
+          files:
+            - "**/internal/domain/**/*.go"
+          deny:
+            - pkg: github.com/anoriqq/pj-tmpl-go/internal/infra
+              desc: "domain層からinfra層のパッケージをインポートすることは禁止されています"
 formatters:
   enable:
     - gci
