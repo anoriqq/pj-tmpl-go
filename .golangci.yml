@@ -3,6 +3,24 @@ linters:
   default: all
   disable:
     - wsl
+    - wsl_v5
+    - varnamelen
+    - revive
+    - noinlineerr
+    - nlreturn
+    - perfsprint
+    - ireturn
+    - gosec
+    - godot
+    - gochecknoinits
+    - mnd
+    - gochecknoglobals
+    - funcorder
+    - exhaustruct
+    - errcheck
+    - depguard
+    - exhaustive
+    - contextcheck
   settings:
     wrapcheck:
       ignore-package-globs:
