@@ -37,7 +37,7 @@ func run(ctx context.Context) (err error) {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
 	defer stop()
 
-	env, err := cli.GetEnv(os.Args[1:])
+	env, port, err := cli.Parse(os.Args[1:])
 	if err != nil {
 		return err
 	}
@@ -45,12 +45,7 @@ func run(ctx context.Context) (err error) {
 	handler := log.GetLogger(env)
 	slog.SetDefault(handler)
 
-	slog.Debug("environment", slog.String("env", env.String()))
-
-	port, err := cli.GetPort(os.Args[1:])
-	if err != nil {
-		return err
-	}
+	slog.Debug("env", slog.String("env", env.String()))
 	slog.Debug("port", slog.String("port", port.String()))
 
 	cwd, err := os.Getwd()

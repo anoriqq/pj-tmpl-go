@@ -16,7 +16,7 @@ import (
 
 // Serve HTTPサーバーを起動する
 func Serve(ctx context.Context, p port.Port) error {
-	s := &http.Server{
+	srv := &http.Server{
 		Addr:                         ":" + p.String(),
 		Handler:                      newHandler(),
 		DisableGeneralOptionsHandler: false,
@@ -44,9 +44,9 @@ func Serve(ctx context.Context, p port.Port) error {
 			}
 		}()
 
-		slog.Info("starting HTTP server", slog.String("addr", s.Addr))
+		slog.Info("starting HTTP server", slog.String("addr", srv.Addr))
 
-		err := s.ListenAndServe()
+		err := srv.ListenAndServe()
 		if err != nil {
 			errCh <- errors.Wrap(err, 0)
 		}
@@ -60,8 +60,8 @@ func Serve(ctx context.Context, p port.Port) error {
 		}
 	}
 
-	if err := gracefulShutdown(s); err != nil {
-		return errors.Wrap(err, 0)
+	if err := gracefulShutdown(srv); err != nil {
+		return err
 	}
 
 	return nil
@@ -71,7 +71,7 @@ func Serve(ctx context.Context, p port.Port) error {
 func gracefulShutdown(srv *http.Server) error {
 	ctx := context.Background()
 
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	slog.Info("shutting down HTTP server", slog.String("addr", srv.Addr))

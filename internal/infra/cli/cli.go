@@ -14,57 +14,43 @@ import (
 	"github.com/go-errors/errors"
 )
 
-const flagSetName = ""
+var ErrNoArgs = errors.New("no arguments provided")
 
-var fs = flag.NewFlagSet(flagSetName, flag.ExitOnError)
-
-var (
-	envString  string
-	portString string
-)
-
-func init() {
+// Parse コマンドライン引数を解析して設定値を取得する
+func Parse(args []string) (env.Env, port.Port, error) {
 	var envZero env.Env
-	envUsage := fmt.Sprintf("environment (%s)", strings.Join(env.EnvStrings(), ","))
-	fs.StringVar(&envString, "env", envZero.String(), envUsage)
-
 	var portZero port.Port
-	portUsage := "port number"
-	fs.StringVar(&portString, "port", portZero.String(), portUsage)
-}
 
-func GetEnv(args []string) (env.Env, error) {
-	var zero env.Env
+	if len(args) == 0 {
+		return envZero, portZero, ErrNoArgs
+	}
+
+	fs := flag.NewFlagSet(args[0], flag.ExitOnError)
+	var envString string
+	{
+		usage := fmt.Sprintf("environment (%s)", strings.Join(env.EnvStrings(), ","))
+		fs.StringVar(&envString, "env", envZero.String(), usage)
+	}
+	var portString string
+	{
+		usage := "port number"
+		fs.StringVar(&portString, "port", portZero.String(), usage)
+	}
 	if err := fs.Parse(args); err != nil {
-		return zero, errors.Wrap(err, 0)
-	}
-	if envString == "" {
-		return zero, errors.New("environment is required")
+		return envZero, portZero, errors.Wrap(err, 0)
 	}
 
-	e, err := env.EnvString(envString)
+	envRes, err := env.EnvString(envString)
 	if err != nil {
-		return 0, err
+		return envZero, portZero, errors.Wrap(err, 0)
 	}
 
-	return e, nil
-}
-
-func GetPort(args []string) (port.Port, error) {
-	var zero port.Port
-	if err := fs.Parse(args); err != nil {
-		return zero, errors.Wrap(err, 0)
-	}
-	if portString == "" {
-		return zero, errors.New("port is required")
-	}
-
-	i, err := strconv.ParseUint(portString, 10, 16)
+	portUint, err := strconv.ParseUint(portString, 10, 16)
 	if err != nil {
-		return port.Port{}, errors.Wrap(err, 0)
+		return envZero, portZero, errors.Wrap(err, 0)
 	}
 
-	p := port.New(uint16(i))
+	portRes := port.New(uint16(portUint))
 
-	return p, nil
+	return envRes, portRes, nil
 }
