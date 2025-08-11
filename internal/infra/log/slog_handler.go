@@ -48,29 +48,33 @@ type Handler struct {
 
 var _ slog.Handler = (*Handler)(nil)
 
+// NewPrettyJSONSlogHandler きれいなJSON形式でログを出力するslogハンドラーを作成する
+func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
+	if opts == nil {
+		opts = &slog.HandlerOptions{
+			AddSource:   false,
+			Level:       nil,
+			ReplaceAttr: nil,
+		}
+	}
+
+	buf := &bytes.Buffer{}
+
+	return &Handler{
+		w: w,
+		h: slog.NewJSONHandler(buf, &slog.HandlerOptions{
+			Level:       opts.Level,
+			AddSource:   opts.AddSource,
+			ReplaceAttr: suppressDefaults(opts.ReplaceAttr),
+		}),
+		b: buf,
+		m: &sync.Mutex{},
+	}
+}
+
 // Enabled implements [slog.Handler] interface.
 func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 	return h.h.Enabled(ctx, level)
-}
-
-// WithAttrs implements [slog.Handler] interface.
-func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return &Handler{
-		w: h.w,
-		h: h.h.WithAttrs(attrs),
-		b: h.b,
-		m: h.m,
-	}
-}
-
-// WithGroup implements [slog.Handler] interface.
-func (h *Handler) WithGroup(name string) slog.Handler {
-	return &Handler{
-		w: h.w,
-		h: h.h.WithGroup(name),
-		b: h.b,
-		m: h.m,
-	}
 }
 
 const (
@@ -115,6 +119,26 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 	return nil
 }
 
+// WithAttrs implements [slog.Handler] interface.
+func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &Handler{
+		w: h.w,
+		h: h.h.WithAttrs(attrs),
+		b: h.b,
+		m: h.m,
+	}
+}
+
+// WithGroup implements [slog.Handler] interface.
+func (h *Handler) WithGroup(name string) slog.Handler {
+	return &Handler{
+		w: h.w,
+		h: h.h.WithGroup(name),
+		b: h.b,
+		m: h.m,
+	}
+}
+
 func (h *Handler) computeAttrs(
 	ctx context.Context,
 	rec slog.Record,
@@ -154,29 +178,5 @@ func suppressDefaults(
 		}
 
 		return next(groups, attr)
-	}
-}
-
-// NewPrettyJSONSlogHandler きれいなJSON形式でログを出力するslogハンドラーを作成する
-func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
-	if opts == nil {
-		opts = &slog.HandlerOptions{
-			AddSource:   false,
-			Level:       nil,
-			ReplaceAttr: nil,
-		}
-	}
-
-	buf := &bytes.Buffer{}
-
-	return &Handler{
-		w: w,
-		h: slog.NewJSONHandler(buf, &slog.HandlerOptions{
-			Level:       opts.Level,
-			AddSource:   opts.AddSource,
-			ReplaceAttr: suppressDefaults(opts.ReplaceAttr),
-		}),
-		b: buf,
-		m: &sync.Mutex{},
 	}
 }

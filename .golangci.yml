@@ -15,7 +15,6 @@ linters:
     - gochecknoinits
     - mnd
     - gochecknoglobals
-    - funcorder
     - nolintlint
   settings:
     wrapcheck:
@@ -38,6 +37,10 @@ linters:
           deny:
             - pkg: github.com/anoriqq/pj-tmpl-go/internal/infra
               desc: "domain層からinfra層のパッケージをインポートすることは禁止されています"
+    funcorder:
+      constructor: true
+      struct-method: true
+      alphabetical: true
 formatters:
   enable:
     - gci
