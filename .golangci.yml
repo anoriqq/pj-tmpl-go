@@ -10,7 +10,6 @@ linters:
     - nlreturn
     - perfsprint
     - ireturn
-    - gosec
     - nolintlint
   settings:
     wrapcheck:
