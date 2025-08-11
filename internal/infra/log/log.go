@@ -7,11 +7,6 @@ import (
 	"github.com/anoriqq/pj-tmpl-go/internal/domain/env"
 )
 
-func init() {
-	var e env.Env
-	slog.SetDefault(GetLogger(e))
-}
-
 // GetLogger 環境に応じた[slog.Logger]を取得する
 func GetLogger(e env.Env) *slog.Logger {
 	switch e {
