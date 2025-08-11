@@ -67,11 +67,13 @@ func Serve(ctx context.Context, p port.Port) error {
 	return nil
 }
 
+const gracefulShutdownTimeout = 10 * time.Second
+
 // nolint:contextcheck
 func gracefulShutdown(srv *http.Server) error {
 	ctx := context.Background()
 
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, gracefulShutdownTimeout)
 	defer cancel()
 
 	slog.Info("shutting down HTTP server", slog.String("addr", srv.Addr))
