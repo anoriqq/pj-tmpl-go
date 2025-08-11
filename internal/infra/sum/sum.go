@@ -18,16 +18,20 @@ type Union2[T1, T2 any] struct {
 
 // Union2T1 2つの型のうち、最初の型を保持するUnion2を作成する
 func Union2T1[T1, T2 any](v T1) Union2[T1, T2] {
+	var zero T2
 	return Union2[T1, T2]{
 		tag: tag1,
 		v1:  v,
+		v2:  zero,
 	}
 }
 
 // Union2T2 2つの型のうち、2番目の型を保持するUnion2を作成する
 func Union2T2[T1, T2 any](v T2) Union2[T1, T2] {
+	var zero T1
 	return Union2[T1, T2]{
 		tag: tag2,
+		v1:  zero,
 		v2:  v,
 	}
 }
@@ -58,24 +62,36 @@ type Union3[T1, T2, T3 any] struct {
 
 // Union3T1 3つの型のうち、最初の型を保持するUnion3を作成する
 func Union3T1[T1, T2, T3 any](v T1) Union3[T1, T2, T3] {
+	var zero2 T2
+	var zero3 T3
 	return Union3[T1, T2, T3]{
 		tag: tag1,
 		v1:  v,
+		v2:  zero2,
+		v3:  zero3,
 	}
 }
 
 // Union3T2 3つの型のうち、2番目の型を保持するUnion3を作成する
 func Union3T2[T1, T2, T3 any](v T2) Union3[T1, T2, T3] {
+	var zero1 T1
+	var zero3 T3
 	return Union3[T1, T2, T3]{
 		tag: tag2,
+		v1:  zero1,
 		v2:  v,
+		v3:  zero3,
 	}
 }
 
 // Union3T3 3つの型のうち、3番目の型を保持するUnion3を作成する
 func Union3T3[T1, T2, T3 any](v T3) Union3[T1, T2, T3] {
+	var zero1 T1
+	var zero2 T2
 	return Union3[T1, T2, T3]{
 		tag: tag3,
+		v1:  zero1,
+		v2:  zero2,
 		v3:  v,
 	}
 }

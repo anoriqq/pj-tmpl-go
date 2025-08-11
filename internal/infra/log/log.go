@@ -16,21 +16,30 @@ func init() {
 func GetLogger(e env.Env) *slog.Logger {
 	switch e {
 	case env.LCL:
-		handler := NewPrettyJSONSlogHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
+		opts := &slog.HandlerOptions{
+			AddSource:   false,
+			Level:       slog.LevelDebug,
+			ReplaceAttr: nil,
+		}
+		handler := NewPrettyJSONSlogHandler(os.Stdout, opts)
 		return slog.New(handler)
 	case env.DEV:
-		handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
+		opts := &slog.HandlerOptions{
+			AddSource:   false,
+			Level:       slog.LevelDebug,
+			ReplaceAttr: nil,
+		}
+		handler := slog.NewJSONHandler(os.Stdout, opts)
 		return slog.New(handler)
 	case env.STG, env.PRD:
 		fallthrough
 	default:
-		handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelInfo,
-		})
+		opts := &slog.HandlerOptions{
+			AddSource:   false,
+			Level:       slog.LevelInfo,
+			ReplaceAttr: nil,
+		}
+		handler := slog.NewJSONHandler(os.Stdout, opts)
 		return slog.New(handler)
 	}
 }

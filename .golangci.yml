@@ -16,7 +16,6 @@ linters:
     - mnd
     - gochecknoglobals
     - funcorder
-    - exhaustruct
     - nolintlint
   settings:
     wrapcheck:

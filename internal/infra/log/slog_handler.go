@@ -145,7 +145,8 @@ func suppressDefaults(
 		if attr.Key == slog.TimeKey ||
 			attr.Key == slog.LevelKey ||
 			attr.Key == slog.MessageKey {
-			return slog.Attr{}
+			var zero slog.Attr
+			return zero
 		}
 
 		if next == nil {
@@ -159,7 +160,11 @@ func suppressDefaults(
 // NewPrettyJSONSlogHandler きれいなJSON形式でログを出力するslogハンドラーを作成する
 func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
 	if opts == nil {
-		opts = &slog.HandlerOptions{}
+		opts = &slog.HandlerOptions{
+			AddSource:   false,
+			Level:       nil,
+			ReplaceAttr: nil,
+		}
 	}
 
 	buf := &bytes.Buffer{}

@@ -17,8 +17,22 @@ import (
 // Serve HTTPサーバーを起動する
 func Serve(ctx context.Context, p port.Port) error {
 	s := &http.Server{
-		Addr:    ":" + p.String(),
-		Handler: newHandler(),
+		Addr:                         ":" + p.String(),
+		Handler:                      newHandler(),
+		DisableGeneralOptionsHandler: false,
+		TLSConfig:                    nil,
+		ReadTimeout:                  0,
+		ReadHeaderTimeout:            0,
+		WriteTimeout:                 0,
+		IdleTimeout:                  0,
+		MaxHeaderBytes:               0,
+		TLSNextProto:                 nil,
+		ConnState:                    nil,
+		ErrorLog:                     nil,
+		BaseContext:                  nil,
+		ConnContext:                  nil,
+		HTTP2:                        nil,
+		Protocols:                    nil,
 	}
 
 	errCh := make(chan error, 1)
