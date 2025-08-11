@@ -9,14 +9,14 @@ const (
 	tag3
 )
 
-// Union2 2つの型のいずれかを保持することを表す型
+// Union2 2つの型のいずれかを保持することを表す型。
 type Union2[T1, T2 any] struct {
 	tag uint8
 	v1  T1 // ゼロ値とみなされる
 	v2  T2
 }
 
-// Union2T1 2つの型のうち、最初の型を保持するUnion2を作成する
+// Union2T1 2つの型のうち、最初の型を保持するUnion2を作成する。
 func Union2T1[T1, T2 any](v T1) Union2[T1, T2] {
 	var zero T2
 	return Union2[T1, T2]{
@@ -26,7 +26,7 @@ func Union2T1[T1, T2 any](v T1) Union2[T1, T2] {
 	}
 }
 
-// Union2T2 2つの型のうち、2番目の型を保持するUnion2を作成する
+// Union2T2 2つの型のうち、2番目の型を保持するUnion2を作成する。
 func Union2T2[T1, T2 any](v T2) Union2[T1, T2] {
 	var zero T1
 	return Union2[T1, T2]{
@@ -36,7 +36,7 @@ func Union2T2[T1, T2 any](v T2) Union2[T1, T2] {
 	}
 }
 
-// Match2 Union2の値に応じて異なる関数を呼び出す
+// Match2 Union2の値に応じて異なる関数を呼び出す。
 func Match2[T1, T2, R any](
 	u Union2[T1, T2],
 	f1 func(T1) R,
@@ -52,7 +52,7 @@ func Match2[T1, T2, R any](
 	}
 }
 
-// Union3 3つの型のいずれかを保持することを表す型
+// Union3 3つの型のいずれかを保持することを表す型。
 type Union3[T1, T2, T3 any] struct {
 	tag uint8
 	v1  T1 // ゼロ値とみなされる
@@ -60,7 +60,7 @@ type Union3[T1, T2, T3 any] struct {
 	v3  T3
 }
 
-// Union3T1 3つの型のうち、最初の型を保持するUnion3を作成する
+// Union3T1 3つの型のうち、最初の型を保持するUnion3を作成する。
 func Union3T1[T1, T2, T3 any](v T1) Union3[T1, T2, T3] {
 	var zero2 T2
 	var zero3 T3
@@ -72,7 +72,7 @@ func Union3T1[T1, T2, T3 any](v T1) Union3[T1, T2, T3] {
 	}
 }
 
-// Union3T2 3つの型のうち、2番目の型を保持するUnion3を作成する
+// Union3T2 3つの型のうち、2番目の型を保持するUnion3を作成する。
 func Union3T2[T1, T2, T3 any](v T2) Union3[T1, T2, T3] {
 	var zero1 T1
 	var zero3 T3
@@ -84,7 +84,7 @@ func Union3T2[T1, T2, T3 any](v T2) Union3[T1, T2, T3] {
 	}
 }
 
-// Union3T3 3つの型のうち、3番目の型を保持するUnion3を作成する
+// Union3T3 3つの型のうち、3番目の型を保持するUnion3を作成する。
 func Union3T3[T1, T2, T3 any](v T3) Union3[T1, T2, T3] {
 	var zero1 T1
 	var zero2 T2
@@ -96,7 +96,7 @@ func Union3T3[T1, T2, T3 any](v T3) Union3[T1, T2, T3] {
 	}
 }
 
-// Match3 Union3の値に応じて異なる関数を呼び出す
+// Match3 Union3の値に応じて異なる関数を呼び出す。
 func Match3[T1, T2, T3, R any](
 	u Union3[T1, T2, T3],
 	f1 func(T1) R,

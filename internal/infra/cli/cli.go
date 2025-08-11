@@ -16,7 +16,7 @@ import (
 
 var ErrNoArgs = errors.New("no arguments provided")
 
-// Parse コマンドライン引数を解析して設定値を取得する
+// Parse コマンドライン引数を解析して設定値を取得する。
 func Parse(args []string) (env.Env, port.Port, error) {
 	var envZero env.Env
 	var portZero port.Port

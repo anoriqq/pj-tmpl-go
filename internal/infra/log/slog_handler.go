@@ -38,7 +38,7 @@ func colorize(colorCode int, v string) string {
 	return fmt.Sprintf("\033[%sm%s%s", strconv.Itoa(colorCode), v, reset)
 }
 
-// Handler ログレコードをきれいなJSONとしてフォーマットするカスタムslogハンドラー
+// Handler ログレコードをきれいなJSONとしてフォーマットするカスタムslogハンドラー。
 type Handler struct {
 	w io.Writer
 	h slog.Handler
@@ -48,7 +48,7 @@ type Handler struct {
 
 var _ slog.Handler = (*Handler)(nil)
 
-// NewPrettyJSONSlogHandler きれいなJSON形式でログを出力するslogハンドラーを作成する
+// NewPrettyJSONSlogHandler きれいなJSON形式でログを出力するslogハンドラーを作成する。
 func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
 	if opts == nil {
 		opts = &slog.HandlerOptions{

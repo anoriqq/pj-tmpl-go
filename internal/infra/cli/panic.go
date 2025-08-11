@@ -7,7 +7,7 @@ import (
 	"github.com/go-errors/errors"
 )
 
-// ParsePanic panicメッセージからerrorを生成する
+// ParsePanic panicメッセージからerrorを生成する。
 func ParsePanic(msg any) error {
 	stack := debug.Stack()
 	text := fmt.Sprintf("panic: %v\n\n%v", msg, string(stack))

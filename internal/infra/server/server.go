@@ -14,7 +14,7 @@ import (
 	"github.com/go-errors/errors"
 )
 
-// Serve HTTPサーバーを起動する
+// Serve HTTPサーバーを起動する。
 func Serve(ctx context.Context, p port.Port) error {
 	srv := &http.Server{
 		Addr:                         ":" + p.String(),
