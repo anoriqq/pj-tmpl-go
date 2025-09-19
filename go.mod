@@ -5,7 +5,7 @@ go 1.24.5
 require github.com/go-errors/errors v1.5.1
 
 require (
-	github.com/brianvoe/gofakeit/v7 v7.6.0
+	github.com/brianvoe/gofakeit/v7 v7.7.0
 	github.com/tenntenn/golden v0.5.5
 )
 
