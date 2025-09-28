@@ -19,6 +19,7 @@ zizmor = "latest"
 golangci-lint = "latest"
 
 [env]
+ENV = "lcl"
 _.file = ".env"
 
 [tasks.help]

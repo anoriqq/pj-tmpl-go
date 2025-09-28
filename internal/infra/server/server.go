@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/anoriqq/pj-tmpl-go/internal/domain/port"
-	"github.com/anoriqq/pj-tmpl-go/internal/infra/cli"
+	"github.com/anoriqq/pj-tmpl-go/internal/infra/pnc"
 	"github.com/go-errors/errors"
 )
 
@@ -40,7 +40,7 @@ func Serve(ctx context.Context, p port.Port) error {
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				errCh <- cli.ParsePanic(r)
+				errCh <- pnc.Parse(r)
 			}
 		}()
 

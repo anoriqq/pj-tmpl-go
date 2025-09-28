@@ -7,7 +7,7 @@ import (
 	"github.com/anoriqq/pj-tmpl-go/internal/domain/env"
 )
 
-// GetLogger 環境に応じた[slog.Logger]を取得する。
+// GetLogger 環境に応じた [slog.Logger] を取得する。
 func GetLogger(e env.Env) *slog.Logger {
 	switch e {
 	case env.LCL:

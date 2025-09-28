@@ -7,7 +7,7 @@ import (
 	"github.com/go-errors/errors"
 )
 
-// NewStackTraceSlogAttr go-errors/errors のエラーからスタックトレースを取得し、
+// NewStackTraceSlogAttr [github.com/go-errors/errors.Error] のエラーからスタックトレースを取得し、
 // [slog.Attr] として返す。
 func NewStackTraceSlogAttr(err error) slog.Attr {
 	if err == nil {

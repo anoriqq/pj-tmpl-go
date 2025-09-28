@@ -1,3 +1,6 @@
+/*
+Package port provides the domain layer interfaces for the application.
+*/
 package port
 
 import (
@@ -9,9 +12,9 @@ import (
 	"github.com/go-errors/errors"
 )
 
-const maxPortValue = math.MaxUint16
+const MaxPortValue = math.MaxUint16
 
-var ErrInvalidPort = fmt.Errorf("port number must be between 0 and %d", maxPortValue)
+var ErrInvalidPort = fmt.Errorf("port number must be between 0 and %d", MaxPortValue)
 
 // Port ポート番号。
 type Port struct {
@@ -25,7 +28,7 @@ func (p *Port) Set(s string) error {
 		return errors.Wrap(err, 0)
 	}
 
-	if v > maxPortValue {
+	if v > MaxPortValue {
 		return errors.Wrap(ErrInvalidPort, 0)
 	}
 	*p = New(uint16(v))
@@ -45,7 +48,7 @@ var _ flag.Value = (*Port)(nil)
 
 // New ポート番号を作成する。
 func New(v uint16) Port {
-	v = min(v, maxPortValue)
+	v = min(v, MaxPortValue)
 
 	return Port{value: v}
 }

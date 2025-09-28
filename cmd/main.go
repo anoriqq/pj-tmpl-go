@@ -7,10 +7,7 @@ import (
 	"context"
 	"log/slog"
 	"os"
-	"os/signal"
 
-	"github.com/anoriqq/pj-tmpl-go/internal/infra/cli"
-	"github.com/anoriqq/pj-tmpl-go/internal/infra/log"
 	"github.com/anoriqq/pj-tmpl-go/internal/infra/server"
 	"github.com/go-errors/errors"
 )
@@ -18,43 +15,21 @@ import (
 func main() {
 	ctx := context.Background()
 
-	if err := run(ctx); err != nil {
-		slog.Error(
-			"failed to run",
-			slog.Any("err", err), log.NewStackTraceSlogAttr(err),
-		)
+	if err := eval(ctx, run); err != nil {
 		os.Exit(1)
 	}
 }
 
-func run(ctx context.Context) (err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			err = cli.ParsePanic(r)
-		}
-	}()
-
-	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
-	defer stop()
-
-	env, port, err := cli.Parse(os.Args[1:])
-	if err != nil {
-		return err
-	}
-
-	handler := log.GetLogger(env)
-	slog.SetDefault(handler)
-
-	slog.Debug("env", slog.String("env", env.String()))
-	slog.Debug("port", slog.String("port", port.String()))
-
+func run(ctx context.Context) error {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return errors.Wrap(err, 0)
 	}
 	slog.Debug("current working directory", slog.String("path", cwd))
 
-	if err := server.Serve(ctx, port); err != nil {
+	cfg := loadConfig()
+
+	if err := server.Serve(ctx, cfg.port); err != nil {
 		return err
 	}
 
