@@ -10,7 +10,6 @@ linters:
     - nlreturn
     - perfsprint
     - ireturn
-    - nolintlint
   settings:
     wrapcheck:
       ignore-package-globs:

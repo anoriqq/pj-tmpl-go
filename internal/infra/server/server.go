@@ -60,6 +60,7 @@ func Serve(ctx context.Context, p port.Port) error {
 		}
 	}
 
+	//nolint:contextcheck // 親ctxはすでにcancel済みなので、新しいctxを作成して使う
 	if err := gracefulShutdown(srv); err != nil {
 		return err
 	}
@@ -69,7 +70,6 @@ func Serve(ctx context.Context, p port.Port) error {
 
 const gracefulShutdownTimeout = 10 * time.Second
 
-// nolint:contextcheck
 func gracefulShutdown(srv *http.Server) error {
 	ctx := context.Background()
 
