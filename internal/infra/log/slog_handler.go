@@ -9,6 +9,8 @@ import (
 	"log/slog"
 	"strconv"
 	"sync"
+
+	"github.com/go-errors/errors"
 )
 
 const (
@@ -36,6 +38,7 @@ func colorize(colorCode int, v string) string {
 	return fmt.Sprintf("\033[%sm%s%s", strconv.Itoa(colorCode), v, reset)
 }
 
+// Handler ログレコードをきれいなJSONとしてフォーマットするカスタムslogハンドラー。
 type Handler struct {
 	w io.Writer
 	h slog.Handler
@@ -45,36 +48,44 @@ type Handler struct {
 
 var _ slog.Handler = (*Handler)(nil)
 
+// NewPrettyJSONSlogHandler きれいなJSON形式でログを出力するslogハンドラーを作成する。
+func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
+	if opts == nil {
+		opts = &slog.HandlerOptions{
+			AddSource:   false,
+			Level:       nil,
+			ReplaceAttr: nil,
+		}
+	}
+
+	buf := &bytes.Buffer{}
+
+	return &Handler{
+		w: w,
+		h: slog.NewJSONHandler(buf, &slog.HandlerOptions{
+			Level:       opts.Level,
+			AddSource:   opts.AddSource,
+			ReplaceAttr: suppressDefaults(opts.ReplaceAttr),
+		}),
+		b: buf,
+		m: &sync.Mutex{},
+	}
+}
+
+// Enabled implements [slog.Handler] interface.
 func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 	return h.h.Enabled(ctx, level)
-}
-
-func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return &Handler{
-		w: h.w,
-		h: h.h.WithAttrs(attrs),
-		b: h.b,
-		m: h.m,
-	}
-}
-
-func (h *Handler) WithGroup(name string) slog.Handler {
-	return &Handler{
-		w: h.w,
-		h: h.h.WithGroup(name),
-		b: h.b,
-		m: h.m,
-	}
 }
 
 const (
 	timeFormat = "[15:04:05.000]"
 )
 
-func (h *Handler) Handle(ctx context.Context, r slog.Record) error {
-	level := r.Level.String() + ":"
+// Handle implements [slog.Handler] interface.
+func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
+	level := rec.Level.String() + ":"
 
-	switch r.Level {
+	switch rec.Level {
 	case slog.LevelDebug:
 		level = colorize(darkGray, level)
 	case slog.LevelInfo:
@@ -85,42 +96,67 @@ func (h *Handler) Handle(ctx context.Context, r slog.Record) error {
 		level = colorize(lightRed, level)
 	}
 
-	attrs, err := h.computeAttrs(ctx, r)
+	attrs, err := h.computeAttrs(ctx, rec)
 	if err != nil {
 		return err
 	}
 
-	b, err := json.MarshalIndent(attrs, "", "  ")
+	jsonBytes, err := json.MarshalIndent(attrs, "", "  ")
 	if err != nil {
 		return fmt.Errorf("error when marshaling attrs: %w", err)
 	}
 
-	fmt.Fprintln(
+	_, err = fmt.Fprintln(
 		h.w,
-		colorize(lightGray, r.Time.Format(timeFormat)),
+		colorize(lightGray, rec.Time.Format(timeFormat)),
 		level,
-		colorize(white, r.Message),
-		colorize(darkGray, string(b)),
+		colorize(white, rec.Message),
+		colorize(darkGray, string(jsonBytes)),
 	)
+	if err != nil {
+		return errors.Wrap(err, 0)
+	}
 
 	return nil
 }
 
+// WithAttrs implements [slog.Handler] interface.
+func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &Handler{
+		w: h.w,
+		h: h.h.WithAttrs(attrs),
+		b: h.b,
+		m: h.m,
+	}
+}
+
+// WithGroup implements [slog.Handler] interface.
+func (h *Handler) WithGroup(name string) slog.Handler {
+	return &Handler{
+		w: h.w,
+		h: h.h.WithGroup(name),
+		b: h.b,
+		m: h.m,
+	}
+}
+
 func (h *Handler) computeAttrs(
 	ctx context.Context,
-	r slog.Record,
+	rec slog.Record,
 ) (map[string]any, error) {
 	h.m.Lock()
 	defer h.m.Unlock()
 
 	defer h.b.Reset()
 
-	if err := h.h.Handle(ctx, r); err != nil {
+	err := h.h.Handle(ctx, rec)
+	if err != nil {
 		return nil, fmt.Errorf("error when calling inner handler's Handle: %w", err)
 	}
 
 	var attrs map[string]any
-	err := json.Unmarshal(h.b.Bytes(), &attrs)
+
+	err = json.Unmarshal(h.b.Bytes(), &attrs)
 	if err != nil {
 		return nil, fmt.Errorf("error when unmarshaling inner handler's Handle result: %w", err)
 	}
@@ -131,33 +167,19 @@ func (h *Handler) computeAttrs(
 func suppressDefaults(
 	next func([]string, slog.Attr) slog.Attr,
 ) func([]string, slog.Attr) slog.Attr {
-	return func(groups []string, a slog.Attr) slog.Attr {
-		if a.Key == slog.TimeKey ||
-			a.Key == slog.LevelKey ||
-			a.Key == slog.MessageKey {
-			return slog.Attr{}
+	return func(groups []string, attr slog.Attr) slog.Attr {
+		if attr.Key == slog.TimeKey ||
+			attr.Key == slog.LevelKey ||
+			attr.Key == slog.MessageKey {
+			var zero slog.Attr
+
+			return zero
 		}
+
 		if next == nil {
-			return a
+			return attr
 		}
-		return next(groups, a)
-	}
-}
 
-func NewPrettyJSONSlogHandler(w io.Writer, opts *slog.HandlerOptions) *Handler {
-	if opts == nil {
-		opts = &slog.HandlerOptions{}
-	}
-	b := &bytes.Buffer{}
-
-	return &Handler{
-		w: w,
-		h: slog.NewJSONHandler(b, &slog.HandlerOptions{
-			Level:       opts.Level,
-			AddSource:   opts.AddSource,
-			ReplaceAttr: suppressDefaults(opts.ReplaceAttr),
-		}),
-		b: b,
-		m: &sync.Mutex{},
+		return next(groups, attr)
 	}
 }

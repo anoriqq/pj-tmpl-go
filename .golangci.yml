@@ -1,0 +1,41 @@
+version: "2"
+linters:
+  default: all
+  disable:
+    - wsl # deprecated since v2.2.0
+  settings:
+    wrapcheck:
+      ignore-package-globs:
+        - github.com/anoriqq/pj-tmpl-go/*
+    varnamelen:
+      ignore-decls:
+        - w io.Writer
+        - w http.ResponseWriter
+        - r *http.Request
+    depguard:
+      rules:
+        main:
+          allow:
+            - $gostd
+            - github.com/anoriqq/pj-tmpl-go
+            - github.com/go-errors/errors
+        do_not_import_infra_from_domain:
+          files:
+            - "**/internal/domain/**/*.go"
+          deny:
+            - pkg: github.com/anoriqq/pj-tmpl-go/internal/infra
+              desc: "domain層からinfra層のパッケージをインポートすることは禁止されています"
+    funcorder:
+      constructor: true
+      struct-method: true
+      alphabetical: true
+formatters:
+  enable:
+    - gci
+    - swaggo
+    - golines
+    - gofumpt
+    - goimports
+    - gofmt
+output:
+  show-stats: false

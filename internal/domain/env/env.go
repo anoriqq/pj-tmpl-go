@@ -3,33 +3,23 @@ Package env provides the environment domain models used throughout the applicati
 */
 package env
 
-import (
-	"flag"
-	"log/slog"
-)
-
+// Env 環境を表す。
+//
 //go:generate go run github.com/anoriqq/enumer@latest -type=Env -transform=lower
 type Env int
 
-var _ flag.Value = (*Env)(nil)
-
-// Set implements flag.Value.
-func (i *Env) Set(s string) error {
-	slog.Info("set env", "value", s)
-	e, err := EnvString(s)
-	if err != nil {
-		return err
-	}
-
-	*i = e
-
-	return nil
-}
-
+// 環境一覧。
 const (
-	_ Env = iota
-	LCL
-	DEV
+	PRD Env = iota
 	STG
-	PRD
+	DEV
+	LCL
 )
+
+// FromStringZero 文字列から [Env] を取得する。
+// 指定された文字列が不正な場合はゼロ値を返す。
+func FromStringZero(s string) Env {
+	e, _ := EnvString(s)
+
+	return e
+}

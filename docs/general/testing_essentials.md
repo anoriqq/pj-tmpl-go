@@ -231,3 +231,20 @@ func TestCalculateTax(t *testing.T) {
     }
 }
 ```
+
+## エラーケースでも全ての戻り値を検証する
+
+エラーが期待される場合でも、関数が予期せず成功した際のデバッグのため、全ての戻り値を検証する。
+
+```go
+// 良い例
+if tt.wantErr && gotErr == nil {
+    t.Errorf("エラーが期待されたが成功した") // t.Fatal()ではなくt.Errorf()で継続
+}
+// エラーケースでも戻り値を検証（デバッグ情報として有用）
+if got != tt.want {
+    t.Errorf("got %v, want %v", got, tt.want)
+}
+```
+
+**理由**: 予期しない成功時に「なぜ成功したか」の手がかりが得られる。

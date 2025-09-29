@@ -1,80 +1,40 @@
+/*
+Package main implements the entry point for the application.
+*/
 package main
 
 import (
 	"context"
 	"log/slog"
 	"os"
-	"os/signal"
 
-	"github.com/anoriqq/pj-tmpl-go/internal/domain/env"
-	"github.com/anoriqq/pj-tmpl-go/internal/infra/cli"
-	"github.com/anoriqq/pj-tmpl-go/internal/infra/log"
+	"github.com/anoriqq/pj-tmpl-go/internal/infra/server"
+	"github.com/go-errors/errors"
 )
-
-func init() {
-	// 初期値はLCL
-	setupLogger(env.LCL)
-}
 
 func main() {
 	ctx := context.Background()
 
-	if err := run(ctx); err != nil {
-		slog.Error("failed to run", slog.Any("err", err), log.NewStackTraceSlogAttr(err))
+	err := eval(ctx, run)
+	if err != nil {
 		os.Exit(1)
 	}
 }
 
 func run(ctx context.Context) error {
-	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
-	defer stop()
-
 	cwd, err := os.Getwd()
 	if err != nil {
-		return err
+		return errors.Wrap(err, 0)
 	}
 
-	c := cli.NewCLI(os.Stdout, os.Stderr, os.Stdin, cwd)
+	slog.Debug("current working directory", slog.String("path", cwd))
 
-	args := os.Args[1:]
-	opts, err := cli.NewOptions(args)
+	cfg := loadConfig()
+
+	err = server.Serve(ctx, cfg.port)
 	if err != nil {
 		return err
 	}
-	if opts.Help() {
-		return nil
-	}
-
-	setupLogger(opts.Env())
-
-	slog.Info("start")
-	if err := c.Main(ctx, opts); err != nil {
-		return err
-	}
-	slog.Info("end")
 
 	return nil
-}
-
-func setupLogger(e env.Env) {
-	switch e {
-	case env.LCL:
-		handler := log.NewPrettyJSONSlogHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
-		logger := slog.New(handler)
-		slog.SetDefault(logger)
-	case env.DEV:
-		handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
-		logger := slog.New(handler)
-		slog.SetDefault(logger)
-	default:
-		handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelInfo,
-		})
-		logger := slog.New(handler)
-		slog.SetDefault(logger)
-	}
 }

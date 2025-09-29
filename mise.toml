@@ -16,8 +16,10 @@ ghalint = "latest"
 pinact = "latest"
 disable-checkout-persist-credentials = "latest"
 zizmor = "latest"
+golangci-lint = "latest"
 
 [env]
+ENV = "lcl"
 _.file = ".env"
 
 [tasks.help]
@@ -43,6 +45,9 @@ run = "ghalint act"
 [tasks."lint:zizmor"]
 run = "zizmor -q ."
 
+[tasks."lint:golangci-lint"]
+run = "golangci-lint run --config .golangci.yml"
+
 [tasks.gen]
 description = "Generate code"
 run = "go generate ./..."
@@ -62,7 +67,6 @@ rm -f $BINARIES
 
 [tasks.build]
 description = "Build all binaries. If RELEASE is set, it will build release binaries."
-depends = ["lint"]
 run = '''
 #!/bin/bash
 set -e

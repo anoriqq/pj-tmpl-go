@@ -18,6 +18,7 @@ This is a Go project template (`pj-tmpl-go`) that provides a well-structured fou
   - `ghalint` - GitHub Actions security linter
   - `pinact` - Pin GitHub Actions versions
   - `zizmor` - GitHub Actions security scanner
+  - `golangci-lint` - Go linter aggregator
 
 ## Template Usage
 
@@ -39,7 +40,7 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 - `mise run run` - Run the application with hot reloading using Air
 - `mise run gen` - Run code generation (go generate ./...)
 - `mise run clean` - Remove built binaries
-- `mise run lint` - Run all linters (actionlint, ghalint, pinact, zizmor)
+- `mise run lint` - Run all linters (actionlint, ghalint, pinact, zizmor, golangci-lint)
 - `RELEASE=1 mise run build` - Production build (strips symbols, static linking, no race detector)
 
 ### Testing
@@ -56,23 +57,27 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 ## Architecture
 
 ### Project Structure
-- `cmd/main.go` - CLI application entry point with signal handling
-- `internal/infra/cli/` - CLI implementation with options parsing
+- `cmd/main.go` - Application entry point with context and error handling
+- `cmd/config.go` - Configuration loading from environment variables
+- `cmd/eval.go` - Application lifecycle management with panic recovery
 - `internal/infra/log/` - Custom slog handler with pretty JSON output
 - `internal/infra/server/` - HTTP server with graceful shutdown
+- `internal/infra/pnc/` - Panic handling utilities
 - `internal/domain/env/` - Environment domain models with code generation
 - `internal/domain/port/` - Port value object with validation (max 65535)
-- `run.go` - Main application logic (coordinates CLI and server)
 
 ### Key Patterns
 1. **Error Handling**: Uses `github.com/go-errors/errors` for stack traces
-2. **Logging**: Environment-aware slog configuration:
+2. **Panic Recovery**: `eval()` function recovers panics and converts to errors via `pnc.Parse()`
+3. **Configuration**: Environment-based config via `loadConfig()` using `sync.OnceValue` for singleton pattern
+4. **Logging**: Environment-aware slog configuration:
    - LCL: Pretty JSON with debug level and colored output
    - DEV: Standard JSON with debug level
    - STG/PRD: Standard JSON with info level
-3. **Context**: Proper context propagation with graceful shutdown (5s timeout)
-4. **Testing**: Table-driven tests using maps (not slices) for randomized execution
-5. **Code Generation**: Enum generation using `github.com/anoriqq/enumer`
+5. **Context**: Proper context propagation with signal handling via `signal.NotifyContext`
+6. **Testing**: Table-driven tests using maps (not slices) for randomized execution
+7. **Code Generation**: Enum generation using `github.com/anoriqq/enumer`
+8. **Layered Architecture**: `depguard` enforces domain layer cannot import infra layer
 
 ### Testing Best Practices (from docs/general/testing_essentials.md)
 - Use descriptive test names: `Test_FunctionName_Condition_ExpectedResult`
@@ -98,6 +103,9 @@ rm -r $(ghq list -p -e ${PKG})/tmp
 - Air configuration in `.air.toml` for hot reloading
 - Build uses CGO_ENABLED=0 for static binaries
 - Release builds include netgo tag and static linking
+- **Linting**: `.golangci.yml` configures all linters with some disabled (wsl, varnamelen, revive, etc.)
+  - `depguard` rule prevents domain layer from importing infra layer
+  - Auto-formatters enabled: gci, gofumpt, goimports, gofmt, golines
 
 ### Initial Setup
 After cloning or creating from template:
