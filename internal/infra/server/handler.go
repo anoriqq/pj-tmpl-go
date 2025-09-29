@@ -27,7 +27,8 @@ func newHandler() *http.ServeMux {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		if _, err := w.Write(b); err != nil {
+		_, err = w.Write(b)
+		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 
 			return

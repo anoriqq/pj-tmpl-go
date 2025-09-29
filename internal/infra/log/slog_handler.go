@@ -106,13 +106,14 @@ func (h *Handler) Handle(ctx context.Context, rec slog.Record) error {
 		return fmt.Errorf("error when marshaling attrs: %w", err)
 	}
 
-	if _, err := fmt.Fprintln(
+	_, err = fmt.Fprintln(
 		h.w,
 		colorize(lightGray, rec.Time.Format(timeFormat)),
 		level,
 		colorize(white, rec.Message),
 		colorize(darkGray, string(jsonBytes)),
-	); err != nil {
+	)
+	if err != nil {
 		return errors.Wrap(err, 0)
 	}
 
@@ -148,13 +149,14 @@ func (h *Handler) computeAttrs(
 
 	defer h.b.Reset()
 
-	if err := h.h.Handle(ctx, rec); err != nil {
+	err := h.h.Handle(ctx, rec)
+	if err != nil {
 		return nil, fmt.Errorf("error when calling inner handler's Handle: %w", err)
 	}
 
 	var attrs map[string]any
 
-	err := json.Unmarshal(h.b.Bytes(), &attrs)
+	err = json.Unmarshal(h.b.Bytes(), &attrs)
 	if err != nil {
 		return nil, fmt.Errorf("error when unmarshaling inner handler's Handle result: %w", err)
 	}

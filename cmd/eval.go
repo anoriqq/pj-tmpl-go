@@ -40,7 +40,8 @@ func eval(ctx context.Context, run func(context.Context) error) (err error) {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
 	defer stop()
 
-	if err = run(ctx); err != nil {
+	err = run(ctx)
+	if err != nil {
 		return errors.Wrap(err, 0)
 	}
 

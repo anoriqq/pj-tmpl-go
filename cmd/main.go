@@ -15,7 +15,8 @@ import (
 func main() {
 	ctx := context.Background()
 
-	if err := eval(ctx, run); err != nil {
+	err := eval(ctx, run)
+	if err != nil {
 		os.Exit(1)
 	}
 }
@@ -29,7 +30,8 @@ func run(ctx context.Context) error {
 
 	cfg := loadConfig()
 
-	if err := server.Serve(ctx, cfg.port); err != nil {
+	err = server.Serve(ctx, cfg.port)
+	if err != nil {
 		return err
 	}
 

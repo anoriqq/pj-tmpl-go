@@ -61,7 +61,8 @@ func Serve(ctx context.Context, p port.Port) error {
 	}
 
 	//nolint:contextcheck // 親ctxはすでにcancel済みなので、新しいctxを作成して使う
-	if err := gracefulShutdown(srv); err != nil {
+	err := gracefulShutdown(srv)
+	if err != nil {
 		return err
 	}
 
