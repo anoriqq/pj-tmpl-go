@@ -57,6 +57,7 @@ jobs:
         with:
           version: ${{ vars.MISE_VERSION }}
           experimental: true
+      - run: go mod download
       - name: Build
         shell: bash
         env:
@@ -66,7 +67,7 @@ jobs:
         shell: bash
         run: mise run test
 
-  cicd:
+  infra:
     needs: changes
     if: ${{ needs.changes.outputs.cicd == 'true' || needs.changes.outputs.force == 'true' }}
     runs-on: ubuntu-latest

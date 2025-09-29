@@ -50,7 +50,7 @@ jobs:
         working-directory: .pulumi
       - name: Test
         working-directory: .pulumi
-        run: go test -v ./...
+        run: mise run test:pulumi
 
   pulumi-preview:
     needs: changes
