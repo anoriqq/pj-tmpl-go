@@ -18,5 +18,6 @@ const (
 
 func EnvStringZero(s string) Env {
 	e, _ := EnvString(s)
+
 	return e
 }

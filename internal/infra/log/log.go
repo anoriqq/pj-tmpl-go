@@ -17,6 +17,7 @@ func GetLogger(e env.Env) *slog.Logger {
 			ReplaceAttr: nil,
 		}
 		handler := NewPrettyJSONSlogHandler(os.Stdout, opts)
+
 		return slog.New(handler)
 	case env.DEV:
 		opts := &slog.HandlerOptions{
@@ -25,6 +26,7 @@ func GetLogger(e env.Env) *slog.Logger {
 			ReplaceAttr: nil,
 		}
 		handler := slog.NewJSONHandler(os.Stdout, opts)
+
 		return slog.New(handler)
 	case env.STG, env.PRD:
 		fallthrough
@@ -35,6 +37,7 @@ func GetLogger(e env.Env) *slog.Logger {
 			ReplaceAttr: nil,
 		}
 		handler := slog.NewJSONHandler(os.Stdout, opts)
+
 		return slog.New(handler)
 	}
 }

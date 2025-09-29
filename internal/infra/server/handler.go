@@ -21,6 +21,7 @@ func newHandler() *http.ServeMux {
 		b, err := json.Marshal(resp{Status: "ok"})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+
 			return
 		}
 
@@ -28,6 +29,7 @@ func newHandler() *http.ServeMux {
 		w.WriteHeader(http.StatusOK)
 		if _, err := w.Write(b); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+
 			return
 		}
 	})

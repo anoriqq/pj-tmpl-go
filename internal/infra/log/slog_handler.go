@@ -170,6 +170,7 @@ func suppressDefaults(
 			attr.Key == slog.LevelKey ||
 			attr.Key == slog.MessageKey {
 			var zero slog.Attr
+
 			return zero
 		}
 

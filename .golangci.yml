@@ -7,7 +7,6 @@ linters:
     - varnamelen
     - revive
     - noinlineerr
-    - nlreturn
   settings:
     wrapcheck:
       ignore-package-globs:
