@@ -2,7 +2,7 @@ version: "2"
 linters:
   default: all
   disable:
-    - wsl
+    - wsl # deprecated since v2.2.0
   settings:
     wrapcheck:
       ignore-package-globs:
