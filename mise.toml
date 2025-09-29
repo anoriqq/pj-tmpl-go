@@ -56,6 +56,11 @@ run = "go generate ./..."
 description = "Run tests"
 run = "gotest -race -shuffle on -timeout 3s -count 2 -vet off ./..."
 
+[tasks."test:pulumi"]
+description = "Run pulumi tests"
+dir = "./.pulumi/"
+run = "gotest -race -shuffle on -timeout 3s -count 2 -vet off ./..."
+
 [tasks.clean]
 description = "Clean up build artifacts"
 run = '''
