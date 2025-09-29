@@ -8,8 +8,6 @@ linters:
     - revive
     - noinlineerr
     - nlreturn
-    - perfsprint
-    - ireturn
   settings:
     wrapcheck:
       ignore-package-globs:

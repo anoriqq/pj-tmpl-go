@@ -41,7 +41,7 @@ func (p *Port) String() string {
 	if p.value == 0 {
 		return "80"
 	}
-	return fmt.Sprintf("%d", p.value)
+	return strconv.FormatUint(uint64(p.value), 10)
 }
 
 var _ flag.Value = (*Port)(nil)
