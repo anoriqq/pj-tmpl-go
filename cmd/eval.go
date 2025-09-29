@@ -22,6 +22,7 @@ func eval(ctx context.Context, run func(context.Context) error) (err error) {
 				log.NewStackTraceSlogAttr(err),
 			)
 		}
+
 		slog.Info("exiting")
 	}()
 

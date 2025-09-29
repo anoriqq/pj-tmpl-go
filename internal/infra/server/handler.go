@@ -18,6 +18,7 @@ func newHandler() *http.ServeMux {
 		type resp struct {
 			Status string `json:"status"`
 		}
+
 		jsonBytes, err := json.Marshal(resp{Status: "ok"})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -27,6 +28,7 @@ func newHandler() *http.ServeMux {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+
 		_, err = w.Write(jsonBytes)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

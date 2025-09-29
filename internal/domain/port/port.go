@@ -33,6 +33,7 @@ func (p *Port) Set(s string) error {
 	if portValue > MaxPortValue {
 		return errors.Wrap(ErrInvalidPort, 0)
 	}
+
 	*p = New(uint16(portValue))
 
 	return nil

@@ -30,14 +30,17 @@ func loadConfig() *config {
 		if v, ok := os.LookupEnv("ENV"); ok {
 			cfg.env = env.FromStringZero(v)
 		}
+
 		if v, ok := os.LookupEnv("PORT"); ok {
 			portValue, err := strconv.ParseUint(v, 10, 64)
 			if err != nil {
 				return nil
 			}
+
 			if portValue > port.MaxPortValue {
 				return nil
 			}
+
 			cfg.port = port.New(uint16(portValue))
 		}
 

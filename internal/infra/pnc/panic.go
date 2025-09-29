@@ -14,6 +14,7 @@ import (
 func Parse(msg any) error {
 	stack := debug.Stack()
 	text := fmt.Sprintf("panic: %v\n\n%v", msg, string(stack))
+
 	err, parseErr := errors.ParsePanic(text)
 	if parseErr != nil {
 		panic(parseErr)

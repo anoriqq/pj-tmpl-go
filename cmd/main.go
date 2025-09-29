@@ -26,6 +26,7 @@ func run(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, 0)
 	}
+
 	slog.Debug("current working directory", slog.String("path", cwd))
 
 	cfg := loadConfig()
