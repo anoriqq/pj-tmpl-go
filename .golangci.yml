@@ -4,13 +4,13 @@ linters:
   disable:
     - wsl
     - wsl_v5
-    - varnamelen
   settings:
     wrapcheck:
       ignore-package-globs:
         - github.com/anoriqq/pj-tmpl-go/*
     varnamelen:
       ignore-decls:
+        - w io.Writer
         - w http.ResponseWriter
         - r *http.Request
     depguard:

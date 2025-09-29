@@ -25,15 +25,15 @@ type Port struct {
 
 // Set implements [flag.Value].
 func (p *Port) Set(s string) error {
-	v, err := strconv.ParseUint(s, 10, 64)
+	portValue, err := strconv.ParseUint(s, 10, 64)
 	if err != nil {
 		return errors.Wrap(err, 0)
 	}
 
-	if v > MaxPortValue {
+	if portValue > MaxPortValue {
 		return errors.Wrap(ErrInvalidPort, 0)
 	}
-	*p = New(uint16(v))
+	*p = New(uint16(portValue))
 
 	return nil
 }

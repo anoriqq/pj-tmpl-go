@@ -25,22 +25,22 @@ func (c config) LogValue() slog.Value {
 
 func loadConfig() *config {
 	return sync.OnceValue(func() *config {
-		var c config
+		var cfg config
 
 		if v, ok := os.LookupEnv("ENV"); ok {
-			c.env = env.FromStringZero(v)
+			cfg.env = env.FromStringZero(v)
 		}
 		if v, ok := os.LookupEnv("PORT"); ok {
-			i, err := strconv.ParseUint(v, 10, 64)
+			portValue, err := strconv.ParseUint(v, 10, 64)
 			if err != nil {
 				return nil
 			}
-			if i > port.MaxPortValue {
+			if portValue > port.MaxPortValue {
 				return nil
 			}
-			c.port = port.New(uint16(i))
+			cfg.port = port.New(uint16(portValue))
 		}
 
-		return &c
+		return &cfg
 	})()
 }
