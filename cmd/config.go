@@ -28,7 +28,7 @@ func loadConfig() *config {
 		var c config
 
 		if v, ok := os.LookupEnv("ENV"); ok {
-			c.env = env.EnvStringZero(v)
+			c.env = env.FromStringZero(v)
 		}
 		if v, ok := os.LookupEnv("PORT"); ok {
 			i, err := strconv.ParseUint(v, 10, 64)

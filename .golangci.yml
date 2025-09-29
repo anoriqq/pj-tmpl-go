@@ -5,7 +5,6 @@ linters:
     - wsl
     - wsl_v5
     - varnamelen
-    - revive
   settings:
     wrapcheck:
       ignore-package-globs:

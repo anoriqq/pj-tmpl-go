@@ -12,8 +12,10 @@ import (
 	"github.com/go-errors/errors"
 )
 
+// MaxPortValue ポート番号の最大値。
 const MaxPortValue = math.MaxUint16
 
+// ErrInvalidPort 不正なポート番号エラー。
 var ErrInvalidPort = fmt.Errorf("port number must be between 0 and %d", MaxPortValue)
 
 // Port ポート番号。

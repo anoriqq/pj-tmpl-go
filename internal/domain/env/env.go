@@ -16,7 +16,9 @@ const (
 	LCL
 )
 
-func EnvStringZero(s string) Env {
+// FromStringZero 文字列から [Env] を取得する。
+// 指定された文字列が不正な場合はゼロ値を返す。
+func FromStringZero(s string) Env {
 	e, _ := EnvString(s)
 
 	return e
