@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/pulumi/pulumi-pulumiservice/sdk/go/pulumiservice"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 
 	"github.com/anoriqq/pj-tmpl-go/.pulumi/pkg"
-	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func TestPulumi_NewStack(t *testing.T) {
