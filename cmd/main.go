@@ -8,8 +8,9 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/anoriqq/pj-tmpl-go/internal/infra/server"
 	"github.com/go-errors/errors"
+
+	"github.com/anoriqq/pj-tmpl-go/internal/infra/server"
 )
 
 func main() {

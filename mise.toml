@@ -16,7 +16,8 @@ ghalint = "latest"
 pinact = "latest"
 disable-checkout-persist-credentials = "latest"
 zizmor = "latest"
-golangci-lint = "latest"
+golangci-lint = "2.5.0"
+yq = "latest"
 
 [env]
 ENV = "lcl"
@@ -29,24 +30,62 @@ run = "mise tasks ls -l"
 [tasks.lint]
 description = "Run linters"
 depends = ["lint:*"]
+dir = "{{cwd}}"
 
 [tasks."lint:pinact"]
 run = "pinact run --check"
+dir = "{{cwd}}"
 
 [tasks."lint:actionlint"]
 run = "actionlint"
+dir = "{{cwd}}"
 
 [tasks."lint:ghalint-run"]
 run = "ghalint run"
+dir = "{{cwd}}"
 
 [tasks."lint:ghalint-act"]
 run = "ghalint act"
+dir = "{{cwd}}"
 
 [tasks."lint:zizmor"]
 run = "zizmor -q ."
 
+[tasks."lint:golangci-lint-setup"]
+description = "Generate merged golangci config for LSP"
+dir = "{{cwd}}"
+run = """
+#!/bin/bash
+set -e
+
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+BASE_CONFIG="$PROJECT_ROOT/.golangci.yml"
+CUSTOM_CONFIG="./.golangci.custom.yml"
+MERGED_CONFIG="./.golangci.yml"
+
+if [ -f "$CUSTOM_CONFIG" ]; then
+  echo "📝 Generating merged config for LSP..."
+  yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' \
+    "$BASE_CONFIG" "$CUSTOM_CONFIG" > "$MERGED_CONFIG"
+  echo "✅ Created $MERGED_CONFIG"
+else
+  # カスタム設定がない場合はベース設定へのシンボリックリンク
+  if [ -L "$MERGED_CONFIG" ] || [ ! -f "$MERGED_CONFIG" ]; then
+    ln -sf "$BASE_CONFIG" "$MERGED_CONFIG"
+    echo "🔗 Linked to base config"
+  fi
+fi
+"""
+
 [tasks."lint:golangci-lint"]
-run = "golangci-lint run --config .golangci.yml"
+description = "Run golangci-lint"
+depends = ["lint:golangci-lint-setup"]
+dir = "{{cwd}}"
+run = "golangci-lint run --config ./.golangci.yml"
+
+[tasks.fmt]
+run = "golangci-lint run --config ./.golangci.yml --fix"
+dir = "{{cwd}}"
 
 [tasks.gen]
 description = "Generate code"

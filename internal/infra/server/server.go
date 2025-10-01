@@ -9,9 +9,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-errors/errors"
+
 	"github.com/anoriqq/pj-tmpl-go/internal/domain/port"
 	"github.com/anoriqq/pj-tmpl-go/internal/infra/pnc"
-	"github.com/go-errors/errors"
 )
 
 // Serve HTTPサーバーを起動する。
