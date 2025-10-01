@@ -58,7 +58,7 @@ jobs:
           experimental: true
       - name: Lint
         shell: bash
-        run: mise run lint
+        run: mise run lint:go
 
   go-build:
     needs: changes
@@ -117,4 +117,4 @@ jobs:
         with:
           version: ${{ vars.MISE_VERSION }}
           experimental: true
-      - run: mise run lint
+      - run: mise run lint:gha

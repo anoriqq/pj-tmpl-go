@@ -32,28 +32,40 @@ description = "Run linters"
 depends = ["lint:*"]
 dir = "{{cwd}}"
 
-[tasks."lint:pinact"]
+[tasks."lint:go"]
+description = "Run linters"
+depends = ["lint:go:*"]
+dir = "{{cwd}}"
+
+[tasks."lint:gha"]
+description = "Run linters"
+depends = ["lint:gha:*"]
+dir = "{{cwd}}"
+
+[tasks."lint:gha:pinact"]
 run = "pinact run --check"
 dir = "{{cwd}}"
 
-[tasks."lint:actionlint"]
+[tasks."lint:gha:actionlint"]
 run = "actionlint"
 dir = "{{cwd}}"
 
-[tasks."lint:ghalint-run"]
+[tasks."lint:gha:ghalint-run"]
 run = "ghalint run"
 dir = "{{cwd}}"
 
-[tasks."lint:ghalint-act"]
+[tasks."lint:gha:ghalint-act"]
 run = "ghalint act"
 dir = "{{cwd}}"
 
-[tasks."lint:zizmor"]
+[tasks."lint:gha:zizmor"]
 run = "zizmor -q ."
 
-[tasks."lint:golangci-lint-setup"]
+[tasks."lint:go:golangci-lint:setup"]
 description = "Generate merged golangci config for LSP"
 dir = "{{cwd}}"
+sources = ["{{config_root}}/.golangci.yml", "{{cwd}}/.golangci.custom.yml"]
+outputs = "./.golangci.yml"
 run = """
 #!/bin/bash
 set -e
@@ -77,9 +89,9 @@ else
 fi
 """
 
-[tasks."lint:golangci-lint"]
+[tasks."lint:go:golangci-lint"]
 description = "Run golangci-lint"
-depends = ["lint:golangci-lint-setup"]
+depends = ["lint:go:golangci-lint:setup"]
 dir = "{{cwd}}"
 run = "golangci-lint run --config ./.golangci.yml"
 
