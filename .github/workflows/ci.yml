@@ -56,7 +56,7 @@ jobs:
         with:
           version: ${{ vars.MISE_VERSION }}
           experimental: true
-      - name: Test
+      - name: Lint
         shell: bash
         run: mise run lint
 
