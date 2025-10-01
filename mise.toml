@@ -18,6 +18,7 @@ disable-checkout-persist-credentials = "latest"
 zizmor = "latest"
 golangci-lint = "2.5.0"
 yq = "latest"
+reviewdog = "0.21.0"
 
 [env]
 ENV = "lcl"
