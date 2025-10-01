@@ -3,6 +3,7 @@ gotest = "go:github.com/rakyll/gotest"
 actionlint = "go:github.com/rhysd/actionlint/cmd/actionlint"
 ghalint = "go:github.com/suzuki-shunsuke/ghalint/cmd/ghalint"
 disable-checkout-persist-credentials = "go:github.com/suzuki-shunsuke/disable-checkout-persist-credentials/cmd/disable-checkout-persist-credentials"
+reviewdog = "go:github.com/reviewdog/reviewdog/cmd/reviewdog"
 
 [tools]
 air = "latest"
