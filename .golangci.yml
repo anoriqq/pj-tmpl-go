@@ -1,8 +1,10 @@
 version: "2"
+
 linters:
   default: all
   disable:
     - wsl # deprecated since v2.2.0
+    - gosmopolitan # ログメッセージで日本語を使うため
   settings:
     wrapcheck:
       ignore-package-globs:
@@ -12,9 +14,13 @@ linters:
         - w io.Writer
         - w http.ResponseWriter
         - r *http.Request
+        - wg sync.WaitGroup
+      ignore-type-assert-ok: true
     depguard:
       rules:
         main:
+          files:
+            - $all
           allow:
             - $gostd
             - github.com/anoriqq/pj-tmpl-go
@@ -29,6 +35,7 @@ linters:
       constructor: true
       struct-method: true
       alphabetical: true
+
 formatters:
   enable:
     - gci
@@ -37,5 +44,13 @@ formatters:
     - gofumpt
     - goimports
     - gofmt
+  settings:
+    gci:
+      custom-order: true
+      sections:
+        - standard
+        - default
+        - localmodule
+
 output:
   show-stats: false

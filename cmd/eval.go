@@ -6,9 +6,10 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/go-errors/errors"
+
 	"github.com/anoriqq/pj-tmpl-go/internal/infra/log"
 	"github.com/anoriqq/pj-tmpl-go/internal/infra/pnc"
-	"github.com/go-errors/errors"
 )
 
 // eval アプリケーションのライフサイクルを管理し、エラーハンドリングとロギングを行う。
