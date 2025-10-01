@@ -1,0 +1,12 @@
+linters:
+  settings:
+    depguard:
+      rules:
+        main:
+          files:
+            - $all
+          allow:
+            - $gostd
+            - github.com/anoriqq/pj-tmpl-go/.pulumi
+            - github.com/go-errors/errors
+            - github.com/pulumi

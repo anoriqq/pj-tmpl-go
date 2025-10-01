@@ -2,12 +2,16 @@ package main
 
 import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+
+	"github.com/anoriqq/pj-tmpl-go/.pulumi/pkg"
+	"github.com/anoriqq/pj-tmpl-go/.pulumi/pulumiutil"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		if isDefaultStack(ctx) {
-			if err := defaultStackOnly(ctx); err != nil {
+		if pulumiutil.IsDefaultStack(ctx) {
+			err := defaultStackOnly(ctx)
+			if err != nil {
 				return err
 			}
 		}
@@ -17,19 +21,23 @@ func main() {
 }
 
 func defaultStackOnly(ctx *pulumi.Context) error {
-	if _, err := Pulumi().NewStack(ctx, getDefaultStack(ctx)); err != nil {
+	_, err := pkg.Pulumi().NewStack(ctx, pulumiutil.GetDefaultStack(ctx))
+	if err != nil {
 		return err
 	}
 
-	if _, err := Pulumi().NewStack(ctx, "stg"); err != nil {
+	_, err = pkg.Pulumi().NewStack(ctx, "stg")
+	if err != nil {
 		return err
 	}
 
-	if _, err := Pulumi().NewStack(ctx, "prd"); err != nil {
+	_, err = pkg.Pulumi().NewStack(ctx, "prd")
+	if err != nil {
 		return err
 	}
 
-	if _, err := GitHub().NewRepository(ctx); err != nil {
+	_, err = pkg.GitHub().NewRepository(ctx)
+	if err != nil {
 		return err
 	}
 

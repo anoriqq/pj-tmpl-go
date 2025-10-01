@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"fmt"
@@ -6,31 +6,45 @@ import (
 	"github.com/go-errors/errors"
 	"github.com/pulumi/pulumi-pulumiservice/sdk/go/pulumiservice"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+
+	"github.com/anoriqq/pj-tmpl-go/.pulumi/pulumiutil"
 )
 
-type pulumiResource struct{}
+// PulumiResource Pulumiのリソースを管理する構造体。
+type PulumiResource struct{}
 
-func (p *pulumiResource) NewStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
+// NewStack 新しいPulumiスタックを作成する。
+func (p *PulumiResource) NewStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
 	stack, err := p.newStack(ctx, name)
 	if err != nil {
 		return nil, err
 	}
-	ctx.Log.Info(
-		fmt.Sprintf("new: %s", name),
-		&pulumi.LogArgs{Resource: stack},
+
+	err = ctx.Log.Info(
+		"new: "+name,
+		&pulumi.LogArgs{
+			Resource:  stack,
+			StreamID:  0,
+			Ephemeral: false,
+		},
 	)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
 
 	return stack, nil
 }
 
-func (*pulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
+func (*PulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
 	args := &pulumiservice.StackArgs{
 		OrganizationName: pulumi.String(ctx.Organization()),
 		ProjectName:      pulumi.String(ctx.Project()),
 		StackName:        pulumi.String(name),
+		ForceDestroy:     nil,
 	}
 	opts := []pulumi.ResourceOption{}
-	if name == getDefaultStack(ctx) {
+
+	if name == pulumiutil.GetDefaultStack(ctx) {
 		stackID := fmt.Sprintf("%s/%s/%s", ctx.Organization(), ctx.Project(), name)
 		opts = append(
 			opts,
@@ -38,6 +52,7 @@ func (*pulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservic
 			pulumi.RetainOnDelete(true),
 		)
 	}
+
 	result, err := pulumiservice.NewStack(ctx, name, args, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
@@ -46,6 +61,7 @@ func (*pulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservic
 	return result, nil
 }
 
-func Pulumi() *pulumiResource {
-	return &pulumiResource{}
+// Pulumi pulumiリソースを管理する構造体を返す。
+func Pulumi() *PulumiResource {
+	return &PulumiResource{}
 }
