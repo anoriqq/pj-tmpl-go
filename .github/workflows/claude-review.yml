@@ -77,17 +77,26 @@ jobs:
         uses: anthropics/claude-code-action@e8bad572273ce919ba15fec95aef0ce974464753 # v1.0.13
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          track_progress: true
           claude_args: |
             --mcp-config /tmp/mcp.json
-            --allowedTools Bash,Edit,MultiEdit,WebFetch,WebSearch,Write,mcp__o3
+            --allowedTools mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash,Edit,MultiEdit,WebFetch,WebSearch,Write,mcp__o3
           prompt: |
-            Please provide a thorough review of this pull request.
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            CONTRIBUTOR: ${{ github.event.pull_request.user.login }}
 
-            Requires careful review, please pay extra attention to:
-            - Adherence to project coding standards
-            - Proper error handling
-            - Security best practices
-            - Test coverage
-            - Documentation
+            Please review this pull request with a focus on:
+            - Code quality and best practices
+            - Potential bugs or issues
+            - Security implications
+            - Performance considerations
+
+            Note: The PR branch is already checked out in the current working directory.
+
+            Use `gh pr comment` for top-level feedback.
+            Use `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues.
+            Only post GitHub comments - don't submit review text as messages.
+            Please provide a thorough review of this pull request.
 
             ユーザー向けに日本語でレビューしてください。
