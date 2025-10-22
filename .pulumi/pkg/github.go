@@ -141,7 +141,7 @@ func GitHub(ctx *pulumi.Context) (*GithubResource, error) {
 		return nil, err
 	}
 
-	owner := ctx.Organization()
+	owner := pulumiutil.GetDefaultRepositoryOwner(ctx)
 	repo := ctx.Project()
 
 	// リポジトリ
