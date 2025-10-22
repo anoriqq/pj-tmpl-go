@@ -21,22 +21,12 @@ func main() {
 }
 
 func defaultStackOnly(ctx *pulumi.Context) error {
-	_, err := pkg.Pulumi().NewStack(ctx, pulumiutil.GetDefaultStack(ctx))
+	_, err := pkg.Pulumi(ctx)
 	if err != nil {
 		return err
 	}
 
-	_, err = pkg.Pulumi().NewStack(ctx, "stg")
-	if err != nil {
-		return err
-	}
-
-	_, err = pkg.Pulumi().NewStack(ctx, "prd")
-	if err != nil {
-		return err
-	}
-
-	_, err = pkg.GitHub().NewRepository(ctx)
+	_, err = pkg.GitHub(ctx)
 	if err != nil {
 		return err
 	}
