@@ -138,7 +138,7 @@ func GitHub(ctx *pulumi.Context) (*GithubResource, error) {
 	t := fmt.Sprintf("%s:github:Suite", ctx.Organization())
 	err := ctx.RegisterComponentResource(t, "github", comp)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, 0)
 	}
 
 	owner := pulumiutil.GetDefaultRepositoryOwner(ctx)
