@@ -75,7 +75,7 @@ jobs:
                   }
                 },
                 "pulumi": {
-                  "transport": "http",
+                  "type": "http",
                   "url": "https://mcp.ai.pulumi.com/mcp"
                 }
               }
