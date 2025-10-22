@@ -110,7 +110,14 @@ run = "gotest -race -shuffle on -timeout 3s -count 2 -vet off ./..."
 [tasks."test:pulumi"]
 description = "Run pulumi tests"
 dir = "./.pulumi/"
-run = "gotest -race -shuffle on -timeout 3s -count 2 -vet off ./..."
+run = """
+#!/bin/bash
+gotest -race -shuffle on -timeout 3s -vet off ./... $@
+if [ $? -eq 0 ]; then
+  echo multiple runs...
+  gotest -shuffle on -timeout 3s -count 2 -vet off ./...
+fi
+"""
 
 [tasks.clean]
 description = "Clean up build artifacts"
