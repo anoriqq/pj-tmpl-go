@@ -19,6 +19,18 @@ type PulumiResource struct {
 	stackPrd     *pulumiservice.Stack
 }
 
+func (r *PulumiResource) StackDefault() *pulumiservice.Stack {
+	return r.stackDefault
+}
+
+func (r *PulumiResource) StackStg() *pulumiservice.Stack {
+	return r.stackStg
+}
+
+func (r *PulumiResource) StackPrd() *pulumiservice.Stack {
+	return r.stackPrd
+}
+
 func (r *PulumiResource) newStack(ctx *pulumi.Context, name string) (*pulumiservice.Stack, error) {
 	args := &pulumiservice.StackArgs{
 		OrganizationName: pulumi.String(ctx.Organization()),

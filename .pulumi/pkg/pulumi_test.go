@@ -10,43 +10,22 @@ import (
 )
 
 func TestPulumi_NewStack(t *testing.T) {
-	t.Parallel()
-
-	t.Run("通常のスタック作成", func(t *testing.T) {
-		t.Parallel()
-		testStackCreation(t, "test-stack", "test-stack")
-	})
-
-	t.Run("デフォルトスタック作成", func(t *testing.T) {
-		t.Parallel()
-		testStackCreation(t, "dev", "dev")
-	})
-}
-
-// testStackCreation は指定されたスタック名でスタックを作成し、基本的な検証を行う。
-func testStackCreation(t *testing.T, stackName, expectedName string) {
-	t.Helper()
-
+	mock := pkg.NewMockProvider()
 	err := pulumi.RunErr(func(ctx *pulumi.Context) error {
-		got, err := pkg.Pulumi().NewStack(ctx, stackName)
+		got, err := pkg.Pulumi(ctx)
 		if err != nil {
 			t.Error(err)
 		}
 
-		// スタック名の検証
-		validateStackName(t, got, expectedName)
-
-		// 組織名とプロジェクト名の検証
-		validateOrgAndProject(t, got, ctx)
+		validateStack(t, ctx, got.StackDefault(), "dev")
+		validateStack(t, ctx, got.StackStg(), "stg")
+		validateStack(t, ctx, got.StackPrd(), "prd")
 
 		return nil
 	},
-		pulumi.WithMocks("test-org", stackName, pkg.NewMockProvider()),
+		pulumi.WithMocks("project", "dev", mock),
 		func(ri *pulumi.RunInfo) {
-			ri.Config = map[string]string{
-				"test-org:defaultStack":  "dev",
-				"test-org:defaultBranch": "main",
-			}
+			ri.Config = mock.Config
 		},
 	)
 	if err != nil {
@@ -54,51 +33,35 @@ func testStackCreation(t *testing.T, stackName, expectedName string) {
 	}
 }
 
-// validateStackName はスタック名が正しく設定されているかを検証する。
-func validateStackName(t *testing.T, stack *pulumiservice.Stack, expectedName string) {
+// validateStack スタックが正しく設定されているかを検証する。
+func validateStack(t *testing.T, ctx *pulumi.Context, stack *pulumiservice.Stack, wantStackName string) {
 	t.Helper()
 
-	pulumi.All(stack.URN(), stack.StackName).ApplyT(func(all []any) error {
-		urn, ok := all[0].(pulumi.URN)
-		if !ok {
-			t.Fatal("URNの型変換に失敗")
-		}
+	pulumi.All(
+		stack.URN(),
+		stack.StackName,
+		stack.OrganizationName,
+		stack.ProjectName,
+	).ApplyT(func(all []any) error {
+		urn := getOutput[pulumi.URN](t, all, 0)
+		name := getOutput[string](t, all, 1)
+		orgName := getOutput[string](t, all, 2)
+		projectName := getOutput[string](t, all, 3)
 
-		name, ok := all[1].(string)
-		if !ok {
-			t.Fatal("StackNameの型変換に失敗")
-		}
+		// Assert
+		t.Run(string(urn), func(t *testing.T) {
+			if name != wantStackName {
+				t.Errorf("スタック名は %s であるはずが %s を得た", wantStackName, name)
+			}
 
-		if name != expectedName {
-			t.Errorf("URN=%sのスタック名は %s であるはずが %s を得た", urn, expectedName, name)
-		}
+			if orgName != ctx.Organization() {
+				t.Errorf("組織名は %s であるはずが %s を得た", ctx.Organization(), orgName)
+			}
 
-		return nil
-	})
-}
-
-// validateOrgAndProject は組織名とプロジェクト名が正しく設定されているかを検証する。
-func validateOrgAndProject(t *testing.T, stack *pulumiservice.Stack, ctx *pulumi.Context) {
-	t.Helper()
-
-	pulumi.All(stack.OrganizationName, stack.ProjectName).ApplyT(func(all []any) error {
-		orgName, ok := all[0].(string)
-		if !ok {
-			t.Fatal("OrganizationNameの型変換に失敗")
-		}
-
-		projectName, ok := all[1].(string)
-		if !ok {
-			t.Fatal("ProjectNameの型変換に失敗")
-		}
-
-		if orgName != ctx.Organization() {
-			t.Errorf("組織名は %s であるはずが %s を得た", ctx.Organization(), orgName)
-		}
-
-		if projectName != ctx.Project() {
-			t.Errorf("プロジェクト名は %s であるはずが %s を得た", ctx.Project(), projectName)
-		}
+			if projectName != ctx.Project() {
+				t.Errorf("プロジェクト名は %s であるはずが %s を得た", ctx.Project(), projectName)
+			}
+		})
 
 		return nil
 	})

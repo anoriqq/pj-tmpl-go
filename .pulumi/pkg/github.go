@@ -18,6 +18,10 @@ type GithubResource struct {
 	branchDefault *github.BranchDefault
 }
 
+func (r *GithubResource) RepositoryName() pulumi.StringOutput {
+	return r.repository.Name
+}
+
 func (r *GithubResource) newBranchDefault(
 	ctx *pulumi.Context,
 	owner, repo string,

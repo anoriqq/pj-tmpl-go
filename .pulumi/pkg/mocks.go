@@ -9,15 +9,16 @@ import (
 
 // MockProvider Pulumiのモックプロバイダー。
 type MockProvider struct {
-	config map[string]string
+	Config map[string]string
 }
 
 // NewMockProvider モックプロバイダーを生成する。
 func NewMockProvider() MockProvider {
 	return MockProvider{
-		config: map[string]string{
-			"project:defaultStack":  "dev",
-			"project:defaultBranch": "main",
+		Config: map[string]string{
+			"project:defaultStack":           "dev",
+			"project:defaultRepositoryOwner": "anoriqq",
+			"project:defaultBranch":          "main",
 		},
 	}
 }
