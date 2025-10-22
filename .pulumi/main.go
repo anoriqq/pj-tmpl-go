@@ -36,7 +36,7 @@ func defaultStackOnly(ctx *pulumi.Context) error {
 		return err
 	}
 
-	_, err = pkg.GitHub().NewRepository(ctx)
+	_, err = pkg.GitHub(ctx)
 	if err != nil {
 		return err
 	}

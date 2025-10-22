@@ -11,51 +11,14 @@ import (
 )
 
 // GithubResource GitHubのリソースを管理する構造体。
-type GithubResource struct{}
+type GithubResource struct {
+	pulumi.ResourceState
 
-// NewRepository 新しいGitHubリポジトリを作成する。
-func (g *GithubResource) NewRepository(ctx *pulumi.Context) (*github.Repository, error) {
-	owner := ctx.Organization()
-	repo := ctx.Project()
-
-	repository, err := g.newRepository(ctx, owner, repo)
-	if err != nil {
-		return nil, err
-	}
-
-	err = ctx.Log.Info(
-		fmt.Sprintf("new: %s/%s", owner, repo),
-		&pulumi.LogArgs{
-			Resource:  repository,
-			StreamID:  0,
-			Ephemeral: false,
-		},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, 0)
-	}
-
-	branchDefault, err := g.newBranchDefault(ctx, owner, repo)
-	if err != nil {
-		return nil, err
-	}
-
-	err = ctx.Log.Info(
-		fmt.Sprintf("new: %s/%s", owner, repo),
-		&pulumi.LogArgs{
-			Resource:  branchDefault,
-			StreamID:  0,
-			Ephemeral: false,
-		},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, 0)
-	}
-
-	return repository, nil
+	repository    *github.Repository
+	branchDefault *github.BranchDefault
 }
 
-func (*GithubResource) newBranchDefault(
+func (r *GithubResource) newBranchDefault(
 	ctx *pulumi.Context,
 	owner, repo string,
 ) (*github.BranchDefault, error) {
@@ -66,7 +29,9 @@ func (*GithubResource) newBranchDefault(
 		Branch:     pulumi.String(branch),
 		Rename:     pulumi.Bool(false),
 	}
-	opts := []pulumi.ResourceOption{}
+	opts := []pulumi.ResourceOption{
+		pulumi.Parent(r),
+	}
 
 	result, err := github.NewBranchDefault(ctx, owner, args, opts...)
 	if err != nil {
@@ -76,7 +41,7 @@ func (*GithubResource) newBranchDefault(
 	return result, nil
 }
 
-func (*GithubResource) newRepository(
+func (r *GithubResource) newRepository(
 	ctx *pulumi.Context,
 	owner, repo string,
 ) (*github.Repository, error) {
@@ -132,6 +97,7 @@ func (*GithubResource) newRepository(
 	opts := []pulumi.ResourceOption{
 		pulumi.Import(pulumi.ID(repo)),
 		pulumi.RetainOnDelete(true),
+		pulumi.Parent(r),
 	}
 
 	result, err := github.NewRepository(ctx, owner, args, opts...)
@@ -142,7 +108,57 @@ func (*GithubResource) newRepository(
 	return result, nil
 }
 
-// GitHub githubリソースを管理するための構造体を返す。
-func GitHub() *GithubResource {
-	return &GithubResource{}
+// GitHub githubリソースを管理する。
+func GitHub(ctx *pulumi.Context) (*GithubResource, error) {
+	comp := &GithubResource{}
+	t := fmt.Sprintf("%s:github:Suite", ctx.Organization())
+	err := ctx.RegisterComponentResource(t, "github", comp)
+	if err != nil {
+		return nil, err
+	}
+
+	owner := ctx.Organization()
+	repo := ctx.Project()
+
+	// リポジトリ
+	repository, err := comp.newRepository(ctx, owner, repo)
+	if err != nil {
+		return nil, err
+	}
+
+	comp.repository = repository
+
+	err = ctx.Log.Info(
+		fmt.Sprintf("new: %s/%s", owner, repo),
+		&pulumi.LogArgs{
+			Resource:  repository,
+			StreamID:  0,
+			Ephemeral: false,
+		},
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
+
+	// デフォルトブランチ
+	branchDefault, err := comp.newBranchDefault(ctx, owner, repo)
+	if err != nil {
+		return nil, err
+	}
+
+	comp.branchDefault = branchDefault
+
+	err = ctx.Log.Info(
+		fmt.Sprintf("new: %s/%s", owner, repo),
+		&pulumi.LogArgs{
+			Resource:  branchDefault,
+			StreamID:  0,
+			Ephemeral: false,
+		},
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
+
+	return comp, nil
 }
