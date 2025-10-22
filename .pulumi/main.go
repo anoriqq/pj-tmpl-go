@@ -21,17 +21,7 @@ func main() {
 }
 
 func defaultStackOnly(ctx *pulumi.Context) error {
-	_, err := pkg.Pulumi().NewStack(ctx, pulumiutil.GetDefaultStack(ctx))
-	if err != nil {
-		return err
-	}
-
-	_, err = pkg.Pulumi().NewStack(ctx, "stg")
-	if err != nil {
-		return err
-	}
-
-	_, err = pkg.Pulumi().NewStack(ctx, "prd")
+	_, err := pkg.Pulumi(ctx)
 	if err != nil {
 		return err
 	}
