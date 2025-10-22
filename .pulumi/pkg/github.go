@@ -33,7 +33,19 @@ func (r *GithubResource) newBranchDefault(
 		pulumi.Parent(r),
 	}
 
-	result, err := github.NewBranchDefault(ctx, owner, args, opts...)
+	result, err := github.NewBranchDefault(ctx, fmt.Sprintf("%s-%s", repo, branch), args, opts...)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
+
+	err = ctx.Log.Info(
+		fmt.Sprintf("new: %s/%s", owner, repo),
+		&pulumi.LogArgs{
+			Resource:  result,
+			StreamID:  0,
+			Ephemeral: false,
+		},
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
 	}
@@ -100,7 +112,19 @@ func (r *GithubResource) newRepository(
 		pulumi.Parent(r),
 	}
 
-	result, err := github.NewRepository(ctx, owner, args, opts...)
+	result, err := github.NewRepository(ctx, repo, args, opts...)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
+
+	err = ctx.Log.Info(
+		fmt.Sprintf("new: %s/%s", owner, repo),
+		&pulumi.LogArgs{
+			Resource:  result,
+			StreamID:  0,
+			Ephemeral: false,
+		},
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
 	}
@@ -128,18 +152,6 @@ func GitHub(ctx *pulumi.Context) (*GithubResource, error) {
 
 	comp.repository = repository
 
-	err = ctx.Log.Info(
-		fmt.Sprintf("new: %s/%s", owner, repo),
-		&pulumi.LogArgs{
-			Resource:  repository,
-			StreamID:  0,
-			Ephemeral: false,
-		},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, 0)
-	}
-
 	// デフォルトブランチ
 	branchDefault, err := comp.newBranchDefault(ctx, owner, repo)
 	if err != nil {
@@ -147,18 +159,6 @@ func GitHub(ctx *pulumi.Context) (*GithubResource, error) {
 	}
 
 	comp.branchDefault = branchDefault
-
-	err = ctx.Log.Info(
-		fmt.Sprintf("new: %s/%s", owner, repo),
-		&pulumi.LogArgs{
-			Resource:  branchDefault,
-			StreamID:  0,
-			Ephemeral: false,
-		},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, 0)
-	}
 
 	return comp, nil
 }
