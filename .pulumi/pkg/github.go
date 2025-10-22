@@ -63,8 +63,15 @@ func (r *GithubResource) newRepository(
 ) (*github.Repository, error) {
 	args := &github.RepositoryArgs{
 		// General
-		Name:       pulumi.String(repo),
-		IsTemplate: pulumi.Bool(true),
+		Name:              pulumi.String(repo),
+		Description:       pulumi.StringPtr(""),
+		HomepageUrl:       pulumi.StringPtr(""),
+		Topics:            pulumi.ToStringArray([]string{}),
+		IsTemplate:        pulumi.Bool(true),
+		AutoInit:          pulumi.Bool(false),
+		GitignoreTemplate: pulumi.StringPtr(""),
+		LicenseTemplate:   pulumi.StringPtr(""),
+		Template:          nil,
 		// Features
 		HasWiki:        pulumi.Bool(false),
 		HasIssues:      pulumi.Bool(true),
@@ -72,15 +79,20 @@ func (r *GithubResource) newRepository(
 		HasProjects:    pulumi.Bool(false),
 		HasDownloads:   pulumi.Bool(true),
 		// Pull Requests
+		AllowSquashMerge:         pulumi.Bool(true),
 		AllowMergeCommit:         pulumi.Bool(false),
 		AllowRebaseMerge:         pulumi.Bool(false),
 		SquashMergeCommitTitle:   pulumi.String("PR_TITLE"),
 		SquashMergeCommitMessage: pulumi.String("PR_BODY"),
+		MergeCommitTitle:         pulumi.String("PR_TITLE"),
+		MergeCommitMessage:       pulumi.String("PR_BODY"),
 		AllowUpdateBranch:        pulumi.Bool(true),
 		AllowAutoMerge:           pulumi.Bool(true),
 		DeleteBranchOnMerge:      pulumi.Bool(true),
 		// Danger Zone
-		Visibility: pulumi.String("public"),
+		Visibility:       pulumi.String("public"),
+		ArchiveOnDestroy: pulumi.Bool(true),
+		Archived:         pulumi.Bool(false),
 		// Security
 		SecurityAndAnalysis: &github.RepositorySecurityAndAnalysisArgs{
 			SecretScanning: &github.RepositorySecurityAndAnalysisSecretScanningArgs{
@@ -91,24 +103,14 @@ func (r *GithubResource) newRepository(
 			},
 			AdvancedSecurity: nil,
 		},
-		AllowSquashMerge:                    nil,
-		ArchiveOnDestroy:                    nil,
-		Archived:                            nil,
-		AutoInit:                            nil,
-		DefaultBranch:                       nil,
-		Description:                         nil,
-		GitignoreTemplate:                   nil,
-		HomepageUrl:                         nil,
-		IgnoreVulnerabilityAlertsDuringRead: nil,
-		LicenseTemplate:                     nil,
-		MergeCommitMessage:                  nil,
-		MergeCommitTitle:                    nil,
-		Pages:                               nil,
-		Private:                             nil,
-		Template:                            nil,
-		Topics:                              nil,
-		VulnerabilityAlerts:                 nil,
-		WebCommitSignoffRequired:            nil,
+		IgnoreVulnerabilityAlertsDuringRead: pulumi.Bool(false),
+		VulnerabilityAlerts:                 pulumi.Bool(true),
+		WebCommitSignoffRequired:            pulumi.Bool(false),
+		// Pages
+		Pages: nil,
+		// Deprecated
+		DefaultBranch: nil,
+		Private:       nil,
 	}
 	opts := []pulumi.ResourceOption{
 		pulumi.Import(pulumi.ID(repo)),
