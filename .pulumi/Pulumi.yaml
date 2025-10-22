@@ -6,4 +6,5 @@ config:
     value:
       pulumi:template: go
   defaultStack: dev
+  defaultRepositoryOwner: anoriqq
   defaultBranch: main

@@ -11,8 +11,10 @@ import (
 func TestGithub_NewRepository(t *testing.T) {
 	t.Parallel()
 
+	mock := pkg.NewMockProvider()
+
 	err := pulumi.RunErr(func(ctx *pulumi.Context) error {
-		got, err := pkg.GitHub().NewRepository(ctx)
+		got, err := pkg.GitHub(ctx)
 		if err != nil {
 			t.Error(err)
 		}
@@ -20,16 +22,9 @@ func TestGithub_NewRepository(t *testing.T) {
 		t.Run("リポジトリ名にはプロジェクト名が使われる", func(t *testing.T) {
 			t.Parallel()
 
-			pulumi.All(got.URN(), got.Name).ApplyT(func(all []any) error {
-				urn, ok := all[0].(pulumi.URN)
-				if !ok {
-					t.Fatal()
-				}
-
-				name, ok := all[1].(string)
-				if !ok {
-					t.Fatal()
-				}
+			pulumi.All(got.URN(), got.RepositoryName()).ApplyT(func(all []any) error {
+				urn := getOutput[pulumi.URN](t, all, 0)
+				name := getOutput[string](t, all, 1)
 
 				if name != ctx.Project() {
 					t.Errorf("URN=%sのリポジトリ名はプロジェクト名であるはずが %s を得た", urn, name)
@@ -41,12 +36,9 @@ func TestGithub_NewRepository(t *testing.T) {
 
 		return nil
 	},
-		pulumi.WithMocks("project", "dev", pkg.NewMockProvider()),
+		pulumi.WithMocks("project", "dev", mock),
 		func(ri *pulumi.RunInfo) {
-			ri.Config = map[string]string{
-				"project:defaultStack":  "dev",
-				"project:defaultBranch": "main",
-			}
+			ri.Config = mock.Config
 		},
 	)
 	if err != nil {

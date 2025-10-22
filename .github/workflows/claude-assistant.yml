@@ -33,38 +33,60 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
+      - uses: jdx/mise-action@e3d7b8d67a7958d1207f6ed871e83b1ea780e7b0 # v3.3.1
         with:
           version: ${{ vars.MISE_VERSION }}
           experimental: true
 
-      - name: Run Claude Code Assistant
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        uses: anthropics/claude-code-action@90d189f3abd48655ec3e2c67c552cc23e92d6028 # v1.0.10
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          timeout_minutes: "60"
-          allowed_tools: |
-            Bash
-            Edit
-            MultiEdit
-            WebFetch
-            WebSearch
-            Write
-            mcp__o3
-          mcp_config: |
+      - name: Create MCP Config
+        run: |
+          cat > /tmp/mcp.json << 'EOF'
             {
               "mcpServers": {
                 "o3": {
-                  "command": "npx",
+                  "command": "pnpm",
                   "args": [
+                    "dlx",
                     "o3-search-mcp"
                   ],
                   "env": {
-                    "SEARCH_CONTEXT_SIZE": "medium",
-                    "REASONING_EFFORT": "medium"
+                    "OPENAI_API_KEY": "${{ secrets.OPENAI_API_KEY }}",
+                    "OPENAI_MODEL": "gpt-5",
+                    "SEARCH_CONTEXT_SIZE": "high",
+                    "REASONING_EFFORT": "medium",
+                    "OPENAI_API_TIMEOUT": "300000",
+                    "OPENAI_MAX_RETRIES": "5"
                   }
+                },
+                "serena": {
+                  "command": "uvx",
+                  "args": [
+                    "--from",
+                    "git+https://github.com/oraios/serena",
+                    "serena",
+                    "start-mcp-server"
+                  ]
+                },
+                "context7": {
+                  "type": "http",
+                  "url": "https://mcp.context7.com/mcp",
+                  "headers": {
+                    "CONTEXT7_API_KEY": "${{ secrets.CONTEXT7_API_KEY }}"
+                  }
+                },
+                "pulumi": {
+                  "type": "http",
+                  "url": "https://mcp.ai.pulumi.com/mcp"
                 }
               }
             }
+          EOF
+
+      - name: Run Claude Code Assistant
+        uses: anthropics/claude-code-action@e8bad572273ce919ba15fec95aef0ce974464753 # v1.0.13
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          track_progress: true
+          claude_args: |
+            --mcp-config /tmp/mcp.json
+            --allowedTools mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash,Edit,MultiEdit,WebFetch,WebSearch,Write,mcp__o3

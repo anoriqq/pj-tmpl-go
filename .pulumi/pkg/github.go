@@ -11,51 +11,18 @@ import (
 )
 
 // GithubResource GitHubのリソースを管理する構造体。
-type GithubResource struct{}
+type GithubResource struct {
+	pulumi.ResourceState
 
-// NewRepository 新しいGitHubリポジトリを作成する。
-func (g *GithubResource) NewRepository(ctx *pulumi.Context) (*github.Repository, error) {
-	owner := ctx.Organization()
-	repo := ctx.Project()
-
-	repository, err := g.newRepository(ctx, owner, repo)
-	if err != nil {
-		return nil, err
-	}
-
-	err = ctx.Log.Info(
-		fmt.Sprintf("new: %s/%s", owner, repo),
-		&pulumi.LogArgs{
-			Resource:  repository,
-			StreamID:  0,
-			Ephemeral: false,
-		},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, 0)
-	}
-
-	branchDefault, err := g.newBranchDefault(ctx, owner, repo)
-	if err != nil {
-		return nil, err
-	}
-
-	err = ctx.Log.Info(
-		fmt.Sprintf("new: %s/%s", owner, repo),
-		&pulumi.LogArgs{
-			Resource:  branchDefault,
-			StreamID:  0,
-			Ephemeral: false,
-		},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, 0)
-	}
-
-	return repository, nil
+	repository    *github.Repository
+	branchDefault *github.BranchDefault
 }
 
-func (*GithubResource) newBranchDefault(
+func (r *GithubResource) RepositoryName() pulumi.StringOutput {
+	return r.repository.Name
+}
+
+func (r *GithubResource) newBranchDefault(
 	ctx *pulumi.Context,
 	owner, repo string,
 ) (*github.BranchDefault, error) {
@@ -66,9 +33,23 @@ func (*GithubResource) newBranchDefault(
 		Branch:     pulumi.String(branch),
 		Rename:     pulumi.Bool(false),
 	}
-	opts := []pulumi.ResourceOption{}
+	opts := []pulumi.ResourceOption{
+		pulumi.Parent(r),
+	}
 
-	result, err := github.NewBranchDefault(ctx, owner, args, opts...)
+	result, err := github.NewBranchDefault(ctx, fmt.Sprintf("%s-%s", repo, branch), args, opts...)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
+
+	err = ctx.Log.Info(
+		fmt.Sprintf("new: %s/%s", owner, repo),
+		&pulumi.LogArgs{
+			Resource:  result,
+			StreamID:  0,
+			Ephemeral: false,
+		},
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
 	}
@@ -76,14 +57,21 @@ func (*GithubResource) newBranchDefault(
 	return result, nil
 }
 
-func (*GithubResource) newRepository(
+func (r *GithubResource) newRepository(
 	ctx *pulumi.Context,
 	owner, repo string,
 ) (*github.Repository, error) {
 	args := &github.RepositoryArgs{
 		// General
-		Name:       pulumi.String(repo),
-		IsTemplate: pulumi.Bool(true),
+		Name:              pulumi.String(repo),
+		Description:       pulumi.StringPtr(""),
+		HomepageUrl:       pulumi.StringPtr(""),
+		Topics:            pulumi.ToStringArray([]string{}),
+		IsTemplate:        pulumi.Bool(true),
+		AutoInit:          pulumi.Bool(false),
+		GitignoreTemplate: pulumi.StringPtr(""),
+		LicenseTemplate:   pulumi.StringPtr(""),
+		Template:          nil,
 		// Features
 		HasWiki:        pulumi.Bool(false),
 		HasIssues:      pulumi.Bool(true),
@@ -91,15 +79,20 @@ func (*GithubResource) newRepository(
 		HasProjects:    pulumi.Bool(false),
 		HasDownloads:   pulumi.Bool(true),
 		// Pull Requests
+		AllowSquashMerge:         pulumi.Bool(true),
 		AllowMergeCommit:         pulumi.Bool(false),
 		AllowRebaseMerge:         pulumi.Bool(false),
 		SquashMergeCommitTitle:   pulumi.String("PR_TITLE"),
 		SquashMergeCommitMessage: pulumi.String("PR_BODY"),
+		MergeCommitTitle:         pulumi.String("MERGE_MESSAGE"),
+		MergeCommitMessage:       pulumi.String("PR_TITLE"),
 		AllowUpdateBranch:        pulumi.Bool(true),
 		AllowAutoMerge:           pulumi.Bool(true),
 		DeleteBranchOnMerge:      pulumi.Bool(true),
 		// Danger Zone
-		Visibility: pulumi.String("public"),
+		Visibility:       pulumi.String("public"),
+		ArchiveOnDestroy: pulumi.Bool(true),
+		Archived:         pulumi.Bool(false),
 		// Security
 		SecurityAndAnalysis: &github.RepositorySecurityAndAnalysisArgs{
 			SecretScanning: &github.RepositorySecurityAndAnalysisSecretScanningArgs{
@@ -110,31 +103,34 @@ func (*GithubResource) newRepository(
 			},
 			AdvancedSecurity: nil,
 		},
-		AllowSquashMerge:                    nil,
-		ArchiveOnDestroy:                    nil,
-		Archived:                            nil,
-		AutoInit:                            nil,
-		DefaultBranch:                       nil,
-		Description:                         nil,
-		GitignoreTemplate:                   nil,
-		HomepageUrl:                         nil,
-		IgnoreVulnerabilityAlertsDuringRead: nil,
-		LicenseTemplate:                     nil,
-		MergeCommitMessage:                  nil,
-		MergeCommitTitle:                    nil,
-		Pages:                               nil,
-		Private:                             nil,
-		Template:                            nil,
-		Topics:                              nil,
-		VulnerabilityAlerts:                 nil,
-		WebCommitSignoffRequired:            nil,
+		IgnoreVulnerabilityAlertsDuringRead: pulumi.Bool(false),
+		VulnerabilityAlerts:                 pulumi.Bool(true),
+		WebCommitSignoffRequired:            pulumi.Bool(false),
+		// Pages
+		Pages: nil,
+		// Deprecated
+		DefaultBranch: nil,
+		Private:       nil,
 	}
 	opts := []pulumi.ResourceOption{
 		pulumi.Import(pulumi.ID(repo)),
 		pulumi.RetainOnDelete(true),
+		pulumi.Parent(r),
 	}
 
-	result, err := github.NewRepository(ctx, owner, args, opts...)
+	result, err := github.NewRepository(ctx, repo, args, opts...)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
+
+	err = ctx.Log.Info(
+		fmt.Sprintf("new: %s/%s", owner, repo),
+		&pulumi.LogArgs{
+			Resource:  result,
+			StreamID:  0,
+			Ephemeral: false,
+		},
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, 0)
 	}
@@ -142,7 +138,33 @@ func (*GithubResource) newRepository(
 	return result, nil
 }
 
-// GitHub githubリソースを管理するための構造体を返す。
-func GitHub() *GithubResource {
-	return &GithubResource{}
+// GitHub githubリソースを管理する。
+func GitHub(ctx *pulumi.Context) (*GithubResource, error) {
+	comp := &GithubResource{}
+	t := fmt.Sprintf("%s:github:Suite", ctx.Organization())
+	err := ctx.RegisterComponentResource(t, "github", comp)
+	if err != nil {
+		return nil, errors.Wrap(err, 0)
+	}
+
+	owner := pulumiutil.GetDefaultRepositoryOwner(ctx)
+	repo := ctx.Project()
+
+	// リポジトリ
+	repository, err := comp.newRepository(ctx, owner, repo)
+	if err != nil {
+		return nil, err
+	}
+
+	comp.repository = repository
+
+	// デフォルトブランチ
+	branchDefault, err := comp.newBranchDefault(ctx, owner, repo)
+	if err != nil {
+		return nil, err
+	}
+
+	comp.branchDefault = branchDefault
+
+	return comp, nil
 }

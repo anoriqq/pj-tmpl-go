@@ -21,6 +21,14 @@ func GetDefaultStack(ctx *pulumi.Context) string {
 	return result
 }
 
+// GetDefaultRepositoryOwner returns the default repository owner from the configuration.
+func GetDefaultRepositoryOwner(ctx *pulumi.Context) string {
+	cfg := config.New(ctx, "")
+	result := cfg.Require("defaultRepositoryOwner")
+
+	return result
+}
+
 // GetDefaultBranch returns the default branch name from the configuration.
 func GetDefaultBranch(ctx *pulumi.Context) string {
 	cfg := config.New(ctx, "")
