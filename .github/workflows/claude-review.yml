@@ -9,9 +9,7 @@ permissions: {}
 jobs:
   claude-code-review:
     if: |
-      contains(fromJSON('["anoriqq"]'), github.event.pull_request.user.login) &&
-        github.event.pull_request.user.type == 'User' &&
-        !contains(github.event.pull_request.title, 'WIP')
+      !contains(github.event.pull_request.title, 'WIP')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -31,37 +29,61 @@ jobs:
           version: ${{ vars.MISE_VERSION }}
           experimental: true
 
-      - name: Review PR from Specific Author
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        uses: anthropics/claude-code-action@e8bad572273ce919ba15fec95aef0ce974464753 # v1.0.13
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          timeout_minutes: "60"
-          allowed_tools: |
-            Bash
-            Edit
-            MultiEdit
-            WebFetch
-            WebSearch
-            Write
-            mcp__o3
-          mcp_config: |
+      - name: Create MCP Config
+        run: |
+          cat > /tmp/mcp.json << 'EOF'
             {
               "mcpServers": {
                 "o3": {
-                  "command": "npx",
+                  "command": "pnpm",
                   "args": [
+                    "dlx",
                     "o3-search-mcp"
                   ],
                   "env": {
-                    "SEARCH_CONTEXT_SIZE": "medium",
-                    "REASONING_EFFORT": "medium"
+                    "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+                    "OPENAI_MODEL": "gpt-5",
+                    "SEARCH_CONTEXT_SIZE": "high",
+                    "REASONING_EFFORT": "medium",
+                    "OPENAI_API_TIMEOUT": "300000",
+                    "OPENAI_MAX_RETRIES": "5"
                   }
+                },
+                "serena": {
+                  "command": "uvx",
+                  "args": [
+                    "--from",
+                    "git+https://github.com/oraios/serena",
+                    "serena",
+                    "start-mcp-server"
+                  ]
+                },
+                "context7": {
+                  "type": "http",
+                  "url": "https://mcp.context7.com/mcp",
+                  "headers": {
+                    "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+                  }
+                },
+                "pulumi": {
+                  "transport": "http",
+                  "url": "https://mcp.ai.pulumi.com/mcp"
                 }
               }
             }
-          direct_prompt: |
+          EOF
+
+      - name: Review PR
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        uses: anthropics/claude-code-action@e8bad572273ce919ba15fec95aef0ce974464753 # v1.0.13
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: |
+            --mcp-config /tmp/mcp.json
+            --allowedTools Bash,Edit,MultiEdit,WebFetch,WebSearch,Write,mcp__o3
+          prompt: |
             Please provide a thorough review of this pull request.
 
             Requires careful review, please pay extra attention to:
