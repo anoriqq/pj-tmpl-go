@@ -1,0 +1,8 @@
+rules:
+  dangerous-triggers:
+    ignore:
+      # pull_request_target is used securely here:
+      # - Does not checkout PR code
+      # - Only uses base branch workflow
+      # - Limited access to secrets
+      - claude-review.yml:3
