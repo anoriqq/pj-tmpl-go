@@ -1,0 +1,14 @@
+runner:
+  golangci-lint:
+    cmd: golangci-lint run
+    format: golangci-lint
+  pinact:
+    cmd: pinact run -check -diff 2>&1
+    errorformat:
+      - "%EERROR %m"
+      - "%WWARN %m"
+      - "%IINFO %m"
+      - "%C%f:%l"
+      - "%-G-%.%#"
+      - "%-G+%.%#"
+      - "%-G%.%#"
