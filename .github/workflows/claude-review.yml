@@ -100,3 +100,4 @@ jobs:
             Please provide a thorough review of this pull request.
 
             ユーザー向けに日本語でレビューしてください。
+          allowed_bots: dependabot[bot],renovate[bot]
