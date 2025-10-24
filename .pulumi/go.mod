@@ -4,9 +4,9 @@ go 1.25.1
 
 require (
 	github.com/go-errors/errors v1.5.1
-	github.com/pulumi/pulumi-github/sdk/v6 v6.7.4
+	github.com/pulumi/pulumi-github/sdk/v6 v6.8.0
 	github.com/pulumi/pulumi-pulumiservice/sdk v0.32.0
-	github.com/pulumi/pulumi/sdk/v3 v3.203.0
+	github.com/pulumi/pulumi/sdk/v3 v3.204.0
 )
 
 require (
