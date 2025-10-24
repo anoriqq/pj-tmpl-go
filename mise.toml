@@ -59,7 +59,7 @@ run = "ghalint act"
 dir = "{{cwd}}"
 
 [tasks."lint:gha:zizmor"]
-run = "zizmor -q ."
+run = "zizmor -q -c .zizmor.yml ."
 
 [tasks."lint:go:golangci-lint:setup"]
 description = "Generate merged golangci config for LSP"
