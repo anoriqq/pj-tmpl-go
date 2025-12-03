@@ -54,7 +54,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
         with:
-          version: ${{ vars.MISE_VERSION }}
+          version: ${{ vars.MISE_VERSION == 'latest' && '' || vars.MISE_VERSION }}
           experimental: true
       - name: Lint
         shell: bash
@@ -73,7 +73,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
         with:
-          version: ${{ vars.MISE_VERSION }}
+          version: ${{ vars.MISE_VERSION == 'latest' && '' || vars.MISE_VERSION }}
           experimental: true
       - run: go mod download
       - name: Build
@@ -95,7 +95,7 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
         with:
-          version: ${{ vars.MISE_VERSION }}
+          version: ${{ vars.MISE_VERSION == 'latest' && '' || vars.MISE_VERSION }}
           experimental: true
       - run: go mod download
       - name: Test
@@ -115,6 +115,6 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
         with:
-          version: ${{ vars.MISE_VERSION }}
+          version: ${{ vars.MISE_VERSION == 'latest' && '' || vars.MISE_VERSION }}
           experimental: true
       - run: mise run lint:gha
