@@ -16,7 +16,7 @@ ghalint = "latest"
 pinact = "latest"
 disable-checkout-persist-credentials = "latest"
 zizmor = "latest"
-golangci-lint = "2.6.2"
+golangci-lint = "2.7.0"
 yq = "latest"
 
 [env]
