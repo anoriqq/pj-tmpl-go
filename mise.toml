@@ -6,7 +6,7 @@ disable-checkout-persist-credentials = "go:github.com/suzuki-shunsuke/disable-ch
 
 [tools]
 air = "latest"
-go = "1.25.6"
+go = "1.25.7"
 gotest = "latest"
 lefthook = "latest"
 gitleaks = "latest"
