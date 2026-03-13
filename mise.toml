@@ -6,7 +6,7 @@ disable-checkout-persist-credentials = "go:github.com/suzuki-shunsuke/disable-ch
 
 [tools]
 air = "latest"
-go = "1.25.6"
+go = "1.26.1"
 gotest = "latest"
 lefthook = "latest"
 gitleaks = "latest"
@@ -16,7 +16,7 @@ ghalint = "latest"
 pinact = "latest"
 disable-checkout-persist-credentials = "latest"
 zizmor = "latest"
-golangci-lint = "2.8.0"
+golangci-lint = "2.11.3"
 yq = "latest"
 
 [env]
